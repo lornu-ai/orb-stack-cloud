@@ -1,0 +1,15 @@
+{
+  "name": "orb-stack-cloud",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ci:validate": "bun run scripts/validate-manifests.ts",
+    "ci:aws-localstack": "bun run scripts/test-localstack-aws.ts",
+    "ci:cloudflare": "bun run scripts/test-cloudflare-api.ts",
+    "ci:gcp": "bun run scripts/test-gcp-api.ts",
+    "ci": "bun run ci:validate && bun run ci:aws-localstack"
+  },
+  "devDependencies": {
+    "yaml": "^2.8.1"
+  }
+}

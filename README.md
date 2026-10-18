@@ -46,3 +46,5 @@ kubectl apply -k tier1
 
 Phases 2–4 (Tailscale enrollment, LocalStack XRDs, Cloudflare edge, tri-path E2E) are defined in
 [docs/EXECUTION_PLAN.md](docs/EXECUTION_PLAN.md).
+
+**CI:** GitHub Actions validates manifests and runs **LocalStack (AWS)**, **Cloudflare**, and **GCP** smoke tests — [docs/CI.md](docs/CI.md).
