@@ -1,0 +1,12 @@
+apiVersion: cloud.lornu.ai/v1alpha1
+kind: XCloudflareEdgeIngress
+metadata:
+  name: osc-stvedores-edge
+  namespace: stevedores
+spec:
+  parameters:
+    zoneName: stvedores.org
+    hostname: osc.stvedores.org
+    prHostnamePattern: "pr-{{ .RunID }}.osc.stvedores.org"
+    serviceUrl: http://osc-web.stevedores.svc.cluster.local:80
+    enableZeroTrustAccess: true

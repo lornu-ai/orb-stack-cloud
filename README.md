@@ -11,6 +11,8 @@ and **Cloudflare** (Tunnels / Zero Trust / DNS) — **not Terraform/OpenTofu**.
 | Original epics (superseded for IaC) | [#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) |
 | **Revised execution plan (canonical)** | [#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) → [docs/EXECUTION_PLAN.md](docs/EXECUTION_PLAN.md) |
 | Implementation status | [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) |
+| Project tracker & changelog | [docs/PROJECT_TRACKER.md](docs/PROJECT_TRACKER.md) · [CHANGELOG.md](CHANGELOG.md) |
+| Testing / CI (#6–#7) | [docs/CI.md](docs/CI.md) |
 
 Track A (Epics 1–6) is OrbStack product engineering. **Track B Epic 7** (three-tier stack +
 mesh + edge) is built here via Crossplane claims and compositions.
@@ -48,3 +50,5 @@ Phases 2–4 (Tailscale enrollment, LocalStack XRDs, Cloudflare edge, tri-path E
 [docs/EXECUTION_PLAN.md](docs/EXECUTION_PLAN.md).
 
 **CI:** GitHub Actions validates manifests and runs **LocalStack (AWS)**, **Cloudflare**, and **GCP** smoke tests — [docs/CI.md](docs/CI.md).
+
+**OSC UI (Stitch):** [web/](web/) · deploy with [k8s/overlays/orbstack-local](k8s/overlays/orbstack-local) or [prod-stvedores](k8s/overlays/prod-stvedores).

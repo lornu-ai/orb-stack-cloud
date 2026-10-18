@@ -1,2 +1,4 @@
 node_modules/
 packages/orbstack-controller/node_modules/
+web/node_modules/
+web/dist/

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stevedores
+resources:
+  - ../../base
+  - httproute-local.yaml
+  - ingress-orb-local.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: osc-web
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+images:
+  - name: us-central1-docker.pkg.dev/inert-synergies-llc/osc/osc-web
+    newName: osc-web
+    newTag: local

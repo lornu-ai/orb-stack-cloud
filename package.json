@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "ci:validate": "bun run scripts/validate-manifests.ts",
+    "ci:web-build": "cd web && bun install --frozen-lockfile && bun run build",
     "ci:aws": "bun run scripts/test-aws-smoke.ts",
     "ci:aws-localstack": "bun run scripts/test-aws-smoke.ts",
     "ci:cloudflare": "bun run scripts/test-cloudflare-api.ts",

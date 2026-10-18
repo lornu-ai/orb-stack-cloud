@@ -24,6 +24,7 @@ jobs:
           bun-version: latest
       - run: bun install
       - run: bun run ci:validate
+      - run: bun run ci:web-build
 
   aws-localstack:
     name: AWS (profile lornu-ai + LocalStack)
