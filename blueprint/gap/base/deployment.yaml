@@ -1,0 +1,70 @@
+# gap-hub — sync gateway / hub from lornu-ai/gap (Nix image).
+# Pin image digest from gap CI before production use (LOR-550).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gap-hub
+  namespace: gap
+  labels:
+    app: gap-hub
+    app.kubernetes.io/name: gap-hub
+    app.kubernetes.io/part-of: gap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gap-hub
+  template:
+    metadata:
+      labels:
+        app: gap-hub
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gap-hub
+          image: us-central1-docker.pkg.dev/inert-synergies-llc/gap/gap-hub:main
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: GAP_LISTEN
+              value: "0.0.0.0:8080"
+            - name: GAP_FLEET_ROLE
+              valueFrom:
+                configMapKeyRef:
+                  name: gap-fleet
+                  key: role
+            - name: GAP_FLEET_MAC
+              valueFrom:
+                configMapKeyRef:
+                  name: gap-fleet
+                  key: mac_id
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsUser: 65532
+            runAsGroup: 65532
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
