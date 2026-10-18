@@ -59,8 +59,8 @@ export async function run(cmd: string[], opts: RunOptions = {}): Promise<RunResu
 }
 
 export async function which(bin: string): Promise<string | undefined> {
-  const path = Bun.which(bin);
-  return path ?? undefined;
+  // Bun.which snapshots PATH at startup unless it is passed explicitly.
+  return Bun.which(bin, { PATH: process.env.PATH ?? "" }) ?? undefined;
 }
 
 export function sleep(ms: number): Promise<void> {
