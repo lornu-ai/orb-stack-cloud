@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gap-hub
+  namespace: gap
+  labels:
+    app: gap-hub
+spec:
+  rules:
+    - host: gap.k8s.orb.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gap-hub
+                port:
+                  number: 8080
