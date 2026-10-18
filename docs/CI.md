@@ -1,53 +1,61 @@
 # Continuous integration (GitHub Actions)
 
-OrbStack and Crossplane reconciliation **cannot run on GitHub-hosted runners** (no macOS
-OrbStack / Apple Silicon VM in standard GHA). CI validates Git manifests and exercises
-**AWS (LocalStack)**, **Cloudflare**, and **GCP** APIs the same way Epic 7.3–7.4 will at runtime.
-
 Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
+
+All AWS checks use the **AWS CLI v2** with a fixed profile:
+
+```bash
+aws --profile lornu-ai …
+```
+
+Default profile name is `lornu-ai` (`AWS_PROFILE` overrides). Implementation: [`scripts/test-aws-smoke.ts`](../scripts/test-aws-smoke.ts).
 
 ## Jobs
 
-| Job | Always runs? | What it proves |
-| --- | --- | --- |
-| **validate** | Yes | YAML parse, K8s `apiVersion`/`kind`, docker-compose LocalStack service |
-| **aws-localstack** | Yes | Creates `invoices-archive` S3 + `billing-events` SQS (issue #5 Story 7.3 AC) |
-| **cloudflare** | Yes (skips if no token) | `CF_API_TOKEN` verify + optional zone lookup |
-| **gcp** | Yes (skips if no creds) | Service account JWT + `projects.get` read-only |
+| Job | What it does |
+| --- | --- |
+| **validate** | Bun YAML / manifest checks |
+| **aws-localstack** | Profile `lornu-ai` + `--endpoint-url` LocalStack → S3 bucket + SQS queue (Story 7.3) |
+| **aws-profile** | Profile `lornu-ai` against **live AWS** (read-only) when repo secrets are set |
+| **cloudflare** | Token verify (+ optional zone) |
+| **gcp** | Optional project get |
 
-## Repository secrets & variables
+## Local (your Mac)
 
-Configure under **Settings → Secrets and variables → Actions**.
-
-| Name | Type | Required | Purpose |
-| --- | --- | --- | --- |
-| `CF_API_TOKEN` | Secret | Optional | Cloudflare API token (`Zone:Read`, `Account:Read` minimum for smoke test) |
-| `CF_ZONE_NAME` | Variable | Optional | e.g. `example.com` — validates token can read zone |
-| `GCP_PROJECT_ID` | Secret | Optional | GCP project id |
-| `GOOGLE_APPLICATION_CREDENTIALS_JSON` | Secret | Optional | Service account JSON; workflow uses `google-github-actions/auth` → read-only project get |
-
-Fork PRs without secrets: **cloudflare** and **gcp** jobs exit 0 with `skipped: true`.
-
-## Local commands
+Use the same profile as day-to-day AWS work:
 
 ```bash
 bun install
 bun run ci:validate
 
-# With LocalStack (matches GHA service):
-docker run --rm -d -p 4566:4566 -e SERVICES=s3,sqs localstack/localstack:3
-LOCALSTACK_ENDPOINT=http://127.0.0.1:4566 bun run ci:aws-localstack
+# Read-only smoke (caller identity + list buckets/queues):
+AWS_SMOKE_READONLY=1 bun run ci:aws
 
-CF_API_TOKEN=... CF_ZONE_NAME=dev.example.com bun run ci:cloudflare
-GCP_PROJECT_ID=... GCP_ACCESS_TOKEN=... bun run ci:gcp
+# Or invoke CLI directly:
+aws --profile lornu-ai sts get-caller-identity
+aws --profile lornu-ai s3 ls
+aws --profile lornu-ai sqs list-queues
 ```
 
-## Real AWS / GCP / Cloudflare in Crossplane
+**LocalStack** (matches GHA):
 
-CI does **not** apply Crossplane providers to a cluster. After OrbStack K8s is up locally:
+```bash
+docker run --rm -d -p 4566:4566 -e SERVICES=s3,sqs --name orb-ls localstack/localstack:3
+LOCALSTACK_ENDPOINT=http://127.0.0.1:4566 bun run ci:aws
+```
 
-- **AWS:** point `provider-upjet-aws` at LocalStack (dev) or real AWS (staging) via `ProviderConfig`.
-- **Cloudflare:** `provider-cloudflare` + `CF_API_TOKEN` Secret.
-- **GCP:** optional future `provider-gcp`; CI only proves credentials are valid.
+## GitHub secrets (optional)
+
+| Secret | Job |
+| --- | --- |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | Enables **aws-profile** (maps into `[lornu-ai]`; readonly smoke) |
+| `CF_API_TOKEN` | Cloudflare |
+| `GCP_PROJECT_ID` + `GOOGLE_APPLICATION_CREDENTIALS_JSON` | GCP |
+
+Use IAM credentials for the same account you use locally under `lornu-ai`, or dedicated CI keys with minimal S3/SQS/STS read (live job is readonly).
+
+## Crossplane
+
+Point `provider-upjet-aws` at LocalStack in dev or at real AWS using credentials equivalent to `--profile lornu-ai` in staging.
 
 See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md).

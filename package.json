@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "ci:validate": "bun run scripts/validate-manifests.ts",
-    "ci:aws-localstack": "bun run scripts/test-localstack-aws.ts",
+    "ci:aws": "bun run scripts/test-aws-smoke.ts",
+    "ci:aws-localstack": "bun run scripts/test-aws-smoke.ts",
     "ci:cloudflare": "bun run scripts/test-cloudflare-api.ts",
     "ci:gcp": "bun run scripts/test-gcp-api.ts",
-    "ci": "bun run ci:validate && bun run ci:aws-localstack"
+    "ci": "bun run ci:validate && bun run ci:aws"
   },
   "devDependencies": {
     "yaml": "^2.8.1"

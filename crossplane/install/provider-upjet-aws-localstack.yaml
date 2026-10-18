@@ -1,7 +1,7 @@
-# Story 7.1 / 7.3 — provider-upjet-aws pointed at LocalStack (tier2 compose).
-# After install, create ProviderConfig with:
-#   endpoint: http://s3.aws.orb.local:4566 (and sqs)
-#   skip_credentials_validation: true, s3_use_path_style: true
+# Story 7.1 / 7.3 — provider-upjet-aws (LocalStack in dev; live AWS via profile lornu-ai in staging).
+# Local dev CLI: aws --profile lornu-ai --endpoint-url http://127.0.0.1:4566 s3 ls
+# OrbStack Compose endpoint: http://s3.aws.orb.local:4566
+# ProviderConfig: skip_credentials_validation, s3_use_path_style for LocalStack
 #
 # apiVersion: pkg.crossplane.io/v1
 # kind: Provider

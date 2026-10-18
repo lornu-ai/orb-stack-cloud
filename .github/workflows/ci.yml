@@ -9,6 +9,10 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  AWS_PROFILE: lornu-ai
+  AWS_DEFAULT_REGION: us-east-1
+
 jobs:
   validate:
     name: Validate manifests (Bun)
@@ -22,7 +26,7 @@ jobs:
       - run: bun run ci:validate
 
   aws-localstack:
-    name: AWS via LocalStack (Epic 7.3)
+    name: AWS (profile lornu-ai + LocalStack)
     runs-on: ubuntu-latest
     needs: validate
     services:
@@ -35,14 +39,30 @@ jobs:
           DEBUG: "0"
     steps:
       - uses: actions/checkout@v4
+      - uses: aws-actions/setup-aws-cli@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
-      - run: bun run ci:aws-localstack
+      - run: bun run ci:aws
         env:
           LOCALSTACK_ENDPOINT: http://127.0.0.1:4566
-          AWS_DEFAULT_REGION: us-east-1
           TEST_S3_BUCKET: invoices-archive
           TEST_SQS_QUEUE: billing-events
+
+  aws-profile:
+    name: AWS (profile lornu-ai — live account)
+    runs-on: ubuntu-latest
+    needs: validate
+    if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/setup-aws-cli@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run ci:aws
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SMOKE_READONLY: "1"
 
   cloudflare:
     name: Cloudflare API smoke
