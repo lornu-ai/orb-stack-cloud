@@ -6,8 +6,9 @@ Gap is **not** a Mac/web-only control plane. Deployment must keep these first-cl
 
 1. **Native iOS client** — Dispatch / Issues / Agents / Gateway on iPhone ([LOR-568](https://linear.app/lornu-ai/issue/LOR-568)).
 2. **Interactive voice play** — a real CallKit / `AVAudioSession` play-and-record session: mic up, agent audio down, barge-in, over one authenticated `wss://` to the gateway ([LOR-548](https://linear.app/lornu-ai/issue/LOR-548), [LOR-569](https://linear.app/lornu-ai/issue/LOR-569), [LOR-570](https://linear.app/lornu-ai/issue/LOR-570)).
+3. **Browser-native agents (WebMCP)** — Gap web registers typed in-tab tools via `document.modelContext`; ChromeOS + `chrome-devtools-mcp` is the QA/dev loop ([WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md), [LOR-594](https://linear.app/lornu-ai/issue/LOR-594)).
 
-OrbStack + Cloudflare exist to make that remote voice path reliable. A hub that only serves local `kubectl` smoke tests is incomplete.
+OrbStack + Cloudflare exist to make that remote voice path reliable. A hub that only serves local `kubectl` smoke tests is incomplete. ChromeOS WebMCP work does **not** replace iOS voice — it makes the web client agent-callable and testable.
 
 ## What this repository is
 
@@ -27,16 +28,21 @@ It is the **infrastructure reference** for OrbStack on Apple Silicon (Crossplane
 
 ```
 GAP iOS (interactive voice) ──┐
-GAP Web                       ─┼── Cloudflare Access ── gap.airesearches.app (Workers)
+GAP Web + WebMCP tools        ─┼── Cloudflare Access ── gap.airesearches.app (Workers / org MCP)
                                │         │
                                │         └── Tunnel / WSS → OrbStack gap-hub  (only after WS auth)
                                │
-                               └── Tailscale / *.k8s.orb.local ──► OrbStack Mac fleet
-                                     gap-hub · (later) GROW worker · persistent data
+                               ├── Tailscale / *.k8s.orb.local ──► OrbStack Mac fleet (gap-hub)
+                               │
+                               └── ChromeOS Crostini ── chrome-devtools-mcp (CDP QA)
+                                        ▲
+                                        └── oxidizedMCP skill mesh (optional)
 ```
 
 - **Public web + MCP:** Cloudflare Workers today ([Gap LOR-578](https://linear.app/lornu-ai/issue/LOR-578)).
+- **In-tab WebMCP:** Gap web `document.modelContext` ([WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md)).
 - **Sync / voice gateway on Macs:** `blueprint/gap/` overlays (`mac-a` primary, `mac-b` / `mac-c` satellites).
+- **Browser-agent / QA hosts:** `blueprint/webmcp-chromeos/` + `fleet/chromeos-agents.yaml`.
 - **iOS voice path:** authenticated full-duplex audio on `wss://` ([LOR-569](https://linear.app/lornu-ai/issue/LOR-569)); secure sessions [LOR-571](https://linear.app/lornu-ai/issue/LOR-571).
 - **Do not** expose unauthenticated `/ws` on the internet ([LOR-545](https://linear.app/lornu-ai/issue/LOR-545)).
 
@@ -50,6 +56,7 @@ GAP Web                       ─┼── Cloudflare Access ── gap.airesear
 | P0 | Persistent storage | PVC/hostPath for SQLite/outbox (LOR-593) |
 | P0 | CI/CD | `lornu-ai/gap` image CI + this repo kustomize-validate |
 | P1 | **iOS interactive voice play** | LOR-548 epic: LOR-568 shell, LOR-569 session, LOR-570 barge-in — needs deployed authenticated gateway |
+| P1 | **WebMCP + ChromeOS agents** | LOR-594 — Gap web tools + chrome-devtools-mcp dual loop (`blueprint/webmcp-chromeos/`) |
 | P1 | Agent delegation | Gap agent workforce epic (incl. voice-to-delegate LOR-561) |
 | P1 | Monitoring | Health checks / alerts |
 
@@ -74,4 +81,4 @@ curl -fsS http://gap.k8s.orb.local:8080/healthz
 
 Voice acceptance (after LOR-545 / LOR-571): iPhone holds a CallKit session to the Lead Agent with duplex audio — not only `/healthz`.
 
-See [GAP-ON-ORBSTACK.md](GAP-ON-ORBSTACK.md).
+See [GAP-ON-ORBSTACK.md](GAP-ON-ORBSTACK.md) and [WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md).
