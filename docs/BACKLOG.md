@@ -2,9 +2,9 @@
 
 | Document | Role |
 |----------|------|
-| **[Issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** | **Current** execution plan (Crossplane, Tailscale, Cloudflare) |
-| [Issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) | Original Terraform-centric plan (superseded for IaC) |
-| [Issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) | Solution architecture |
+| **[Issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** | **Current** execution plan (Crossplane, Tailscale, Cloudflare) |
+| [Issue #2](https://github.com/stevedores-org/orb-stack-cloud/issues/2) | Original Terraform-centric plan (superseded for IaC) |
+| [Issue #1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) | Solution architecture |
 
 ## Track B — in this repository
 

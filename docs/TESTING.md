@@ -1,6 +1,6 @@
 # Testing and verification
 
-Implements the test architecture in [issue #6](https://github.com/lornu-ai/orb-stack-cloud/issues/6) and the stories in [issue #7](https://github.com/lornu-ai/orb-stack-cloud/issues/7). Every suite is Bun TypeScript under `tests/`; there is no Python, Bash, or `jq` in the harness.
+Implements the test architecture in [issue #6](https://github.com/stevedores-org/orb-stack-cloud/issues/6) and the stories in [issue #7](https://github.com/stevedores-org/orb-stack-cloud/issues/7). Every suite is Bun TypeScript under `tests/`; there is no Python, Bash, or `jq` in the harness.
 
 | Tier | Command | Runs on | What it gates |
 |---|---|---|---|
@@ -45,6 +45,34 @@ Issue #6 and #7 use `pr-<run_id>.ci.example.com`. Names are kept one label below
 - **cloud-init schema.** Validated against the upstream cloud-init 26.2 JSON schema in Bun instead of the Python `cloud-init schema` command.
 - **GCE parity.** Uses the Compute REST API and the serial console instead of `gcloud` and SSH. Checking PostgreSQL, node-exporter, and `cloud-tuning.conf` inside the VM needs SSH through IAP or OS Login and is reported as a skip (`gce-service-state`) until that exists. Opening the blueprint's PostgreSQL to the internet to probe it was rejected.
 - **AWS parity.** The same `XEventBus` claim cannot yet be reconciled against LocalStack and AWS because XEventBus has no Composition; the billing S3/SQS contract is compared directly with the AWS SDK, and the claim-level check is a visible skip.
+
+## First measurements (2026-10-18, M4 Max, OrbStack 2.2.3)
+
+Run on a developer Mac, not a dedicated runner: Kubernetes and about 60 containers were running, and Rosetta was not toggled.
+
+| Gate | Result | Measured | Target |
+|---|---|---|---|
+| Idle CPU | fail | 39.6% of one core (61 containers running — not idle) | < 0.1% |
+| Warm boot (`orb stop` → `orb start`) | pass | P50 236 ms, P95 248 ms | P95 < 300 ms |
+| Cached-image create (`orb create`) | fail | P50 11.4 s, P95 12.6 s | P95 < 300 ms |
+| Memory balloon | pass | 90% of a 3.5 GiB rise returned in 7.1 s | ≥ 90% in < 10 s |
+| APFS TRIM | fail | nothing within 5 s; 3.18 of 3.22 GB by 23 s | ≥ 2.5 GB in < 5 s |
+| VirtioFS inotify | fail | P50 58 ms, P95 62 ms (±14 ms clock error) | P95 < 10 ms |
+| Virtio-net | pass | 56 Gbps single stream | ≥ 35 Gbps |
+| Rosetta vs QEMU | skip | engine restart not allowed on a shared Mac | ≥ 3× |
+
+Isolation (`--isolated --isolate-network`), each probe checked against a non-isolated control machine:
+
+| Probe | Result |
+|---|---|
+| `~`, `/mnt/mac`, `/Volumes` | hidden |
+| `SSH_AUTH_SOCK` | unset |
+| `host.orb.internal` | blocked |
+| Docker container on the OrbStack bridge | **reachable** — HTTP 200 with the probe's nonce, in every run |
+| Kubernetes API ClusterIP | **reachable** — HTTP 401 from the API server, in every run |
+| macOS LAN address | inconclusive — reachable in one suite run, blocked in three later runs, where even the control machine could not connect (macOS firewall state) |
+
+A bare TCP connect reported the LAN address reachable when no application answered, so probes require an HTTP status or a PostgreSQL SSL response.
 
 ## Not built here
 

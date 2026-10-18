@@ -1,8 +1,8 @@
 # Engineering execution plan (Crossplane · Tailscale · Cloudflare)
 
-**Canonical backlog:** GitHub **[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** (replaces Terraform-centric **[issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2)** for IaC and edge/mesh scope).
+**Canonical backlog:** GitHub **[issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** (replaces Terraform-centric **[issue #2](https://github.com/stevedores-org/orb-stack-cloud/issues/2)** for IaC and edge/mesh scope).
 
-**Architecture narrative:** **[issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)**.
+**Architecture narrative:** **[issue #1](https://github.com/stevedores-org/orb-stack-cloud/issues/1)**.
 
 This file is the **repo implementation map** — what lives in git today vs OrbStack product (Track A) vs Phase 4 Crossplane extensions.
 

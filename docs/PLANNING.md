@@ -1,6 +1,6 @@
 # Planning — Crossplane, Tailscale, Cloudflare (no Terraform)
 
-**Execution plan:** **[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)**  
+**Execution plan:** **[issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)**  
 **Implementation map:** [EXECUTION-PLAN.md](EXECUTION-PLAN.md)
 
 Crossplane on OrbStack Kubernetes is the **IaC control plane**. Tailscale provides **zero-trust mesh** (tailnet, operator, machine `tailscaled`). Cloudflare provides **public edge** (Tunnel, Zero Trust Access, DNS).
