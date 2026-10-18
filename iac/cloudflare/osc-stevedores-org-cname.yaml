@@ -1,0 +1,25 @@
+# DNS for osc.stevedores.org — reconcile after ALB hostname is known.
+# Set spec.forProvider.content to the ALB DNS name from:
+#   kubectl get ingress -n stevedores osc-stevedores -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+#
+# Zone ID: Cloudflare dashboard → stevedores.org → Overview (or fix ProviderConfig zone_id for Upjet).
+apiVersion: dns.upjet-cloudflare.upbound.io/v1alpha1
+kind: Record
+metadata:
+  name: stevedores-org-osc-cname
+  labels:
+    app.kubernetes.io/part-of: orb-stack-cloud
+    lornu.ai/app: stevedores
+    lornu.ai/zone: stevedores.org
+spec:
+  deletionPolicy: Delete
+  providerConfigRef:
+    name: default
+  forProvider:
+    # Replace REPLACE_WITH_ALB_HOSTNAME before apply (e.g. k8s-xxx.us-east-2.elb.amazonaws.com)
+    content: REPLACE_WITH_ALB_HOSTNAME
+    name: osc.stevedores.org
+    type: CNAME
+    proxied: true
+    ttl: 1
+    zoneId: REPLACE_WITH_CLOUDFLARE_ZONE_ID

@@ -1,0 +1,14 @@
+# Issue #5 Story 7.2 — Tier 3 Postgres + Vault via LocalCloudStack claim.
+# Name mapping: plan "XOrbMachine" → repo XOrbStackMachine / LocalCloudStack.
+apiVersion: cloud.orbstack.io/v1alpha1
+kind: LocalCloudStack
+metadata:
+  name: personal
+  namespace: default
+spec:
+  parameters:
+    namespace: local-cloud
+    enableTier3: true
+    enableTier1: true
+  compositionRef:
+    name: localcloudstack-epic7

@@ -1,0 +1,12 @@
+# Story 7.1 / 7.3 — provider-upjet-aws (LocalStack in dev; live AWS via profile lornu-ai in staging).
+# Local dev CLI: aws --profile lornu-ai --endpoint-url http://127.0.0.1:4566 s3 ls
+# OrbStack Compose endpoint: http://s3.aws.orb.local:4566
+# ProviderConfig: skip_credentials_validation, s3_use_path_style for LocalStack
+#
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-aws
+# spec:
+#   package: xpkg.upbound.io/upbound/provider-aws-s3:v1.11.0
+# (Add SQS provider package or monolithic provider-aws per Upbound docs.)

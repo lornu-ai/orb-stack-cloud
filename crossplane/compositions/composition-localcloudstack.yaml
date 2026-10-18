@@ -1,0 +1,55 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: localcloudstack-epic7
+  labels:
+    provider: orbstack
+spec:
+  compositeTypeRef:
+    apiVersion: cloud.orbstack.io/v1alpha1
+    kind: XLocalCloudStack
+  mode: Pipeline
+  pipeline:
+    - step: tier3-machines
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: postgres-machine
+            base:
+              apiVersion: cloud.orbstack.io/v1alpha1
+              kind: OrbStackMachine
+              metadata:
+                name: postgres
+                namespace: local-cloud
+              spec:
+                distro: ubuntu
+                hostname: postgres
+                cloudInitConfigMapRef:
+                  name: cloud-init-postgres
+                  key: user-data
+          - name: vault-machine
+            base:
+              apiVersion: cloud.orbstack.io/v1alpha1
+              kind: OrbStackMachine
+              metadata:
+                name: vault
+                namespace: local-cloud
+              spec:
+                distro: debian
+                hostname: vault
+                cloudInitConfigMapRef:
+                  name: cloud-init-vault
+                  key: user-data
+        patchSets:
+          - name: namespace-from-claim
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.namespace
+                toFieldPath: metadata.namespace
+        patches:
+          - type: PatchSet
+            patchSetName: namespace-from-claim
+            resourceNames: [postgres-machine, vault-machine]

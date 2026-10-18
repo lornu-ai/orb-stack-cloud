@@ -1,0 +1,18 @@
+# Epic 7.2 — Tier 2 on OrbStack (run on macOS host: docker compose up -d)
+services:
+  legacy-billing-amd64:
+    image: node:20-bookworm-slim
+    platform: linux/amd64
+    command: ["node", "-e", "require('http').createServer((q,r)=>r.end('ok')).listen(8080)"]
+    environment:
+      DATABASE_URL: postgres://app:localcloud@postgres.orb.local:5432/microservices
+    labels:
+      dev.orbstack.domains: billing.internal.orb.local@8080
+
+  localstack-aws:
+    image: localstack/localstack:3
+    platform: linux/arm64
+    environment:
+      SERVICES: s3,sqs
+    labels:
+      dev.orbstack.domains: s3.aws.orb.local@4566,sqs.aws.orb.local@4566

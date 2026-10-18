@@ -1,0 +1,14 @@
+apiVersion: cloud.orbstack.io/v1alpha1
+kind: OrbStackMachineClaim
+metadata:
+  name: postgres
+  namespace: local-cloud
+spec:
+  parameters:
+    distro: ubuntu
+    hostname: postgres
+    cloudInitConfigMapRef:
+      name: cloud-init-postgres
+      key: user-data
+  compositionRef:
+    name: orbstackmachine-default

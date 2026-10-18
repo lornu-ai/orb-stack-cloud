@@ -1,0 +1,17 @@
+# Canonical production edge for OSC (Google Stitch UI + Crossplane claims).
+# Repo: https://github.com/stevedores-org/orb-stack-cloud
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: osc-stevedores-domain
+  namespace: stevedores
+  labels:
+    app.kubernetes.io/part-of: orb-stack-cloud
+    iac.lornu.ai/domain: stevedores
+data:
+  zone: stevedores.org
+  hostname: osc.stevedores.org
+  prHostnamePattern: "pr-{{ .RunID }}.osc.stevedores.org"
+  localHostname: osc.k8s.orb.local
+  serviceUrl: http://osc-web.stevedores.svc.cluster.local:80
+  cloudflareAccess: "true"

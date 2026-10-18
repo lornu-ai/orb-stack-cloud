@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main, feat/**]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_PROFILE: lornu-ai
+  AWS_DEFAULT_REGION: us-east-1
+
+jobs:
+  validate:
+    name: Validate manifests (Bun)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+      - run: bun run ci:validate
+      - run: bun run ci:web-build
+
+  aws-localstack:
+    name: AWS (profile lornu-ai + LocalStack)
+    runs-on: ubuntu-latest
+    needs: validate
+    services:
+      localstack:
+        image: localstack/localstack:3
+        ports:
+          - 4566:4566
+        env:
+          SERVICES: s3,sqs
+          DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/setup-aws-cli@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run ci:aws
+        env:
+          LOCALSTACK_ENDPOINT: http://127.0.0.1:4566
+          TEST_S3_BUCKET: invoices-archive
+          TEST_SQS_QUEUE: billing-events
+
+  aws-profile:
+    name: AWS (profile lornu-ai — live account)
+    runs-on: ubuntu-latest
+    needs: validate
+    if: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/setup-aws-cli@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run ci:aws
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SMOKE_READONLY: "1"
+
+  cloudflare:
+    name: Cloudflare API smoke
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run ci:cloudflare
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ZONE_NAME: ${{ vars.CF_ZONE_NAME }}
+
+  gcp:
+    name: GCP API smoke
+    runs-on: ubuntu-latest
+    needs: validate
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        id: auth
+        continue-on-error: true
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run ci:gcp
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}

@@ -1,0 +1,18 @@
+{
+  "name": "orb-stack-cloud",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ci:validate": "bun run scripts/validate-manifests.ts",
+    "ci:web-build": "cd web && bun install --frozen-lockfile && bun run build",
+    "ci:aws": "bun run scripts/test-aws-smoke.ts",
+    "ci:aws-localstack": "bun run scripts/test-aws-smoke.ts",
+    "ci:cloudflare": "bun run scripts/test-cloudflare-api.ts",
+    "ci:gcp": "bun run scripts/test-gcp-api.ts",
+    "ci": "bun run ci:validate && bun run ci:aws",
+    "deploy:eks": "bun run scripts/deploy-osc-eks.ts"
+  },
+  "devDependencies": {
+    "yaml": "^2.8.1"
+  }
+}

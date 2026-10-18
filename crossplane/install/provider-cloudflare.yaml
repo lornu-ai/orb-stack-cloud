@@ -1,0 +1,7 @@
+# Phase 3 — install Upbound provider-cloudflare, then create ProviderConfig + Secret (CF_API_TOKEN).
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-cloudflare
+# spec:
+#   package: xpkg.upbound.io/upbound/provider-cloudflare:v0.11.0

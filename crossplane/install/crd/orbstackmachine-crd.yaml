@@ -1,0 +1,64 @@
+# Host-reconciled machine (orb create). Composed by Crossplane; applied by orbstack-controller.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: orbstackmachines.cloud.orbstack.io
+spec:
+  group: cloud.orbstack.io
+  names:
+    kind: OrbStackMachine
+    listKind: OrbStackMachineList
+    plural: orbstackmachines
+    singular: orbstackmachine
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required: [distro, hostname]
+              properties:
+                distro:
+                  type: string
+                  description: "ubuntu | debian | fedora | alpine"
+                hostname:
+                  type: string
+                cloudInit:
+                  type: string
+                  description: Inline #cloud-config or script
+                cloudInitConfigMapRef:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    key:
+                      type: string
+                isolated:
+                  type: boolean
+                  default: false
+                isolateNetwork:
+                  type: boolean
+                  default: false
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                orbDomain:
+                  type: string
+                message:
+                  type: string
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Hostname
+          type: string
+          jsonPath: .spec.hostname
+        - name: Phase
+          type: string
+          jsonPath: .status.phase

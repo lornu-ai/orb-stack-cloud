@@ -1,0 +1,51 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: orbstackmachine-default
+  labels:
+    provider: orbstack
+spec:
+  compositeTypeRef:
+    apiVersion: cloud.orbstack.io/v1alpha1
+    kind: XOrbStackMachine
+  mode: Pipeline
+  pipeline:
+    - step: render-machine
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: orbstack-machine
+            base:
+              apiVersion: cloud.orbstack.io/v1alpha1
+              kind: OrbStackMachine
+              spec:
+                distro: ubuntu
+                hostname: placeholder
+            patches:
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.distro
+                toFieldPath: spec.distro
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.hostname
+                toFieldPath: spec.hostname
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.cloudInitConfigMapRef.name
+                toFieldPath: spec.cloudInitConfigMapRef.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.cloudInitConfigMapRef.key
+                toFieldPath: spec.cloudInitConfigMapRef.key
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.isolated
+                toFieldPath: spec.isolated
+              - type: FromCompositeFieldPath
+                fromFieldPath: spec.parameters.isolateNetwork
+                toFieldPath: spec.isolateNetwork
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.name
+                toFieldPath: metadata.name
+              - type: FromCompositeFieldPath
+                fromFieldPath: metadata.namespace
+                toFieldPath: metadata.namespace
