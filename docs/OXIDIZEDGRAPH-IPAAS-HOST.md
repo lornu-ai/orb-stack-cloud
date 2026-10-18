@@ -59,7 +59,7 @@ WebMCP / chrome-devtools-mcp remain the **browser** dual loop ([LOR-594](https:/
 
 ## 3. WorkflowBlueprint → oxidizedgraph
 
-Frontend `@xyflow` saves a declarative `WorkflowBlueprint`. On activate/run, the Host compiles JSON into an oxidizedgraph instance by binding each node id to a `WorkflowNodeExecutor` (native Rust, Bun UDS, or MCP).
+Frontend `@xyflow` saves a declarative `WorkflowBlueprint`. On activate/run, the Host compiles JSON into an oxidizedgraph `CompiledGraph` by binding each node id to an oxidizedgraph `NodeExecutor` (native Rust, Bun UDS, or MCP) from a `NodeRegistry`. Branches are `core.switch` nodes whose edges carry XYFlow's `source_handle`; oxidizedgraph routes on that key, so edges take no expression strings.
 
 ```rust
 // Declarative JSON from XYFlow — see blueprint/ipaas-host/crates/ipaas-compiler
@@ -130,7 +130,7 @@ Gap org MCP (`gap.airesearches.app/mcp`) and WebMCP tools are **consumers/produc
 
 ### Phase 1 — Control Plane + JSON adapter (Week 1)
 
-- Cargo workspace: `ipaas-control-plane` (axum + sqlx Postgres), `ipaas-compiler` (Blueprint → oxidizedgraph + Postgres checkpoints).
+- Cargo workspace: `ipaas-control-plane` (axum + sqlx Postgres), `ipaas-compiler` (Blueprint → oxidizedgraph). oxidizedgraph's `Checkpointer` ships with memory and SurrealDB stores only; Postgres checkpoints need a `Checkpointer` implementation in the Host.
 - Native executors: `WebhookTrigger`, `HttpRequestExecutor` (reqwest), `ConditionalSwitchExecutor`.
 
 ### Phase 2 — Warm Bun UDS pool + Zod v4 registry (Week 2)
