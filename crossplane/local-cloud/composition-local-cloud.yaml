@@ -182,7 +182,7 @@ spec:
                             add_header Content-Type text/plain;
                           }
                           location /api/v1/checkout {
-                            proxy_pass http://auth-service.local-cloud.svc.cluster.local:8080/;
+                            proxy_pass http://auth-service:8080/;
                           }
                         }
                 providerConfigRef:

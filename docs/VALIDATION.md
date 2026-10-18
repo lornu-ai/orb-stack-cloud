@@ -25,20 +25,27 @@ curl -sk https://s3.aws.orb.local/_localstack/health
 aws --profile lornu-ai --endpoint-url=http://s3.aws.orb.local:4566 s3 ls
 ```
 
-## Tier 1
+## Tier 1 (choose one path)
+
+**Crossplane-managed (recommended):**
 
 ```bash
-kubectl apply -k blueprint/tier1
+kubectl apply -k crossplane/providers
+kubectl apply -k crossplane/local-cloud
+kubectl apply -f examples/claim-reference-local-cloud.yaml
+kubectl get localcloudblueprintclaims
 curl -sk https://app.k8s.orb.local/healthz
 curl -sk https://app.k8s.orb.local/api/v1/checkout
 ```
 
-## Crossplane
+**Manual blueprint only** (no Crossplane Tier 1 objects):
 
 ```bash
-kubectl apply -f examples/claim-reference-local-cloud.yaml
-kubectl get localcloudblueprintclaims
+kubectl apply -k blueprint/tier1
+curl -sk https://app.k8s.orb.local/healthz
 ```
+
+Do not apply both `blueprint/tier1` and `claim-reference-local-cloud.yaml` — they define the same Deployments.
 
 ## Tri-path ingress (Story 7.4 — full DoD)
 

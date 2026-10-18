@@ -9,7 +9,11 @@ const tier3Dir = join(repoRoot, "blueprint/tier3-cloudinit");
 
 function render(path: string): string {
   const raw = readFileSync(path, "utf8");
-  const pubkey = process.env.ORB_SSH_PUBKEY ?? "";
+  const pubkey = process.env.ORB_SSH_PUBKEY?.trim() ?? "";
+  if (!pubkey) {
+    console.error("ORB_SSH_PUBKEY is required (see docs/VALIDATION.md)");
+    process.exit(1);
+  }
   const tsAuthKey = process.env.TS_AUTHKEY ?? "";
   return raw
     .replaceAll("${ORB_SSH_PUBKEY}", pubkey)
