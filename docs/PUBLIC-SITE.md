@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **URL** | https://osc.stevedores.org |
-| **Source repo** | https://github.com/lornu-ai/orb-stack-cloud |
+| **Source repo** | https://github.com/stevedores-org/orb-stack-cloud |
 | **IaC (forge)** | `aivcs://aivcs/infra-code-micro@main` |
 
 ## Forge paths

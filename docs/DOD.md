@@ -1,6 +1,6 @@
 # Program Definition of Done & NFR gateways
 
-From **[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** §6. Verification ownership split between **OrbStack product** (Track A) and **this repo** (Track B / Epic 7).
+From **[issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** §6. Verification ownership split between **OrbStack product** (Track A) and **this repo** (Track B / Epic 7).
 
 | Metric / capability | Target | Verified by | Owner |
 | :--- | :--- | :--- | :--- |

@@ -1,6 +1,6 @@
 # Infrastructure as code — Crossplane only
 
-Canonical stories: **[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** Epic 7.
+Canonical stories: **[issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** Epic 7.
 
 ## Terraform → Crossplane
 

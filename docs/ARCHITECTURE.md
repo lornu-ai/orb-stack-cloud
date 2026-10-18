@@ -1,7 +1,7 @@
 # Reference local cloud architecture
 
-- **Engine / platform:** [issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)
-- **Execution plan & topology diagram:** [issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) §1
+- **Engine / platform:** [issue #1](https://github.com/stevedores-org/orb-stack-cloud/issues/1)
+- **Execution plan & topology diagram:** [issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) §1
 
 ## Tiers + control plane
 
