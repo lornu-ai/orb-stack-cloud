@@ -13,6 +13,15 @@ Infrastructure-as-code for [stevedores-org/orb-stack-cloud](https://github.com/s
 
 ## Apply order (production)
 
+**EKS fleet (`community-stevedores-org`, us-east-2):**
+
+```bash
+bun run deploy:eks
+# Then CNAME osc.stevedores.org → ALB (see docs/DEPLOY.md)
+```
+
+**Gateway API + Crossplane edge (when `gateway-system` exists):**
+
 ```bash
 kubectl apply -f iac/domains/stevedores.yaml
 kubectl apply -k k8s/overlays/prod-stevedores

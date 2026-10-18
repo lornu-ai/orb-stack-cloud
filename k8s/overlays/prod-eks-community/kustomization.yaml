@@ -1,0 +1,11 @@
+# Production on AWS EKS: community-stevedores-org (us-east-2).
+# Uses static assets ConfigMap when ECR image is not pushed yet (see scripts/deploy-osc-eks.ts).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stevedores
+resources:
+  - ../../base
+  - ingress-alb.yaml
+patches:
+  - path: deployment-static.yaml
+# ECR image deploy: use sibling overlay prod-eks-community-ecr (after docker push).

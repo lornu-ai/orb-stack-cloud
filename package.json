@@ -9,7 +9,8 @@
     "ci:aws-localstack": "bun run scripts/test-aws-smoke.ts",
     "ci:cloudflare": "bun run scripts/test-cloudflare-api.ts",
     "ci:gcp": "bun run scripts/test-gcp-api.ts",
-    "ci": "bun run ci:validate && bun run ci:aws"
+    "ci": "bun run ci:validate && bun run ci:aws",
+    "deploy:eks": "bun run scripts/deploy-osc-eks.ts"
   },
   "devDependencies": {
     "yaml": "^2.8.1"
