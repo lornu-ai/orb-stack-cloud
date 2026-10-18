@@ -51,6 +51,38 @@ spec:
                       type: string
                       default: local-cloud
                   required: [ingressHost, namespace]
+                connectivity:
+                  type: object
+                  description: Tailscale mesh and Cloudflare edge (Crossplane P1–P2); replaces Terraform CF/TS modules.
+                  properties:
+                    tailscale:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: false
+                        exposeService:
+                          type: string
+                          description: Tier 1 Service name to publish on the tailnet via operator
+                          default: api-gateway
+                        hostname:
+                          type: string
+                          description: Desired MagicDNS or operator hostname suffix
+                    cloudflare:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: false
+                        zone:
+                          type: string
+                          description: Cloudflare zone name (e.g. example.com)
+                        publicHost:
+                          type: string
+                          description: FQDN for Tunnel + Access (e.g. app.dev.example.com)
+                        accessRequired:
+                          type: boolean
+                          default: true
               required: [tier3, tier1]
             status:
               type: object

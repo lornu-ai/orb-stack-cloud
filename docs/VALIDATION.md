@@ -35,3 +35,9 @@ Story 7.3 target: checkout returns **200** when Tier 2 and Tier 3 are up and gat
 kubectl apply -f examples/claim-reference-local-cloud.yaml
 kubectl get localcloudblueprintclaims,localcloudblueprints
 ```
+
+## Tailscale and Cloudflare (optional P1–P2)
+
+**P1 — Tailscale:** From a second device on the same tailnet, reach Tier 1 via operator-published hostname (see `spec.connectivity.tailscale` on the claim). Tier 3 Postgres/Vault must respond on tailnet or Mac-only paths, not the public internet.
+
+**P2 — Cloudflare:** With Tunnel + Access applied via Crossplane (planned), `curl` the public hostname from an off-tailnet network; unauthenticated requests should fail Access; authenticated session should reach `https://app.k8s.orb.local` equivalent origin.

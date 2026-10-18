@@ -1,57 +1,51 @@
 # orb-stack-cloud
 
-Reference **Personal Cloud** workload blueprint for [OrbStack](https://orbstack.dev) on Apple Silicon — implementing [Track B / Epic 7](https://github.com/lornu-ai/orb-stack-cloud/issues/2) from the program backlog, with **Crossplane** (and GitOps) instead of Terraform/OpenTofu.
+Reference **Personal Cloud** workload blueprint for [OrbStack](https://orbstack.dev) on Apple Silicon — [Track B / Epic 7](https://github.com/lornu-ai/orb-stack-cloud/issues/2), with **Crossplane**, **Tailscale**, and **Cloudflare** instead of Terraform/OpenTofu.
 
-Solution architecture context lives in [issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1); execution stories in [issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2). Track A (OrbStack engine) is product scope; **this repo is Track B only**.
+Architecture context: [issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1). **Planning SoT:** [docs/PLANNING.md](docs/PLANNING.md).
+
+## Control plane (no Terraform)
+
+| Pillar | Purpose |
+|--------|---------|
+| **Crossplane** | Declarative Tier 1 + planned Cloudflare/Tailscale Compositions |
+| **Tailscale** | Private mesh to Mac, K8s, and Tier 3 admin |
+| **Cloudflare** | Optional public DNS, Tunnel, Zero Trust Access |
+
+On-box routing stays OrbStack **`*.orb.local`** / **`*.k8s.orb.local`** (issue #1).
 
 ## Three tiers
 
 | Tier | Issue story | This repo |
 |------|-------------|-----------|
-| **3** | Postgres + Vault Linux machines (`*.orb.local`) | `blueprint/tier3-cloudinit/` + Crossplane bundle; bootstrap via `tools/bootstrap-tier3` (replaces `terraform apply` / TF wrapper) |
-| **2** | amd64 billing + arm64 LocalStack (Compose) | `blueprint/tier2/docker-compose.yml`; optional K8s mirror under `blueprint/tier2/k8s/` |
-| **1** | api-gateway + auth-service on integrated K8s | `blueprint/tier1/` + Crossplane `LocalCloudBlueprintClaim` |
-
-## Crossplane vs Terraform
-
-Story 7.1 originally specified Terraform/OpenTofu around `orb create`. Here:
-
-- **`LocalCloudBlueprintClaim`** (`orbstack.lornu.ai/v1alpha1`) drives a **Composition** that materializes Tier 1 on the cluster and publishes Tier 3 **cloud-init** bundles as in-cluster ConfigMaps.
-- **Tier 3 machines** are still created with `orb create … -c <userdata>` (OrbStack API); a Bun CLI reads the same YAML the claim syncs. See [docs/CROSSPLANE.md](docs/CROSSPLANE.md).
+| **3** | Postgres + Vault Linux machines | `blueprint/tier3-cloudinit/` + `tools/bootstrap-tier3` |
+| **2** | amd64 billing + arm64 LocalStack | `blueprint/tier2/docker-compose.yml` |
+| **1** | api-gateway + auth-service | `blueprint/tier1/` + `LocalCloudBlueprintClaim` |
 
 ## Prerequisites
 
-- OrbStack with Kubernetes enabled (`kubectl config use-context orbstack`).
-- Crossplane on the cluster — either bootstrap [lornu-ai/orb-code](https://github.com/lornu-ai/orb-code) `clusters/orbstack-local` (recommended) or install core + `crossplane/providers` from this repo.
-- **provider-kubernetes** (included under `crossplane/providers/`).
+- OrbStack Kubernetes (`kubectl config use-context orbstack`).
+- Crossplane (+ **provider-kubernetes** from this repo; **orb-code** bootstrap recommended).
+- Tailscale on the Mac (tailnet); Cloudflare account optional until P2.
 
 ## Quick start
 
 ```bash
-# Tier 3 Linux machines (after cloud-init YAML is on disk)
-cd tools/bootstrap-tier3 && bun install && bun run bootstrap
-
-# Tier 2
+cd tools/bootstrap-tier3 && bun install && ORB_SSH_PUBKEY='…' bun run bootstrap
 docker compose -f blueprint/tier2/docker-compose.yml up -d
-
-# Tier 1 via kubectl
 kubectl apply -k blueprint/tier1
-
-# Or declarative Crossplane claim (Tier 1 + Tier 3 bundle sync)
-kubectl apply -f examples/claim-reference-local-cloud.yaml
-kubectl wait --for=condition=Ready localcloudblueprintclaims/reference-local-cloud --timeout=5m
+# Or: kubectl apply -f examples/claim-reference-local-cloud.yaml
 ```
 
-End-to-end validation: [docs/VALIDATION.md](docs/VALIDATION.md).
-
-## GitOps (Flux on OrbStack)
-
-`clusters/orbstack-local/` holds Flux `Kustomization` stubs meant to be wired when this repo is the Flux source (same pattern as `orb-code`). Compositions live in `crossplane/local-cloud/`.
+Validation: [docs/VALIDATION.md](docs/VALIDATION.md).
 
 ## Docs
 
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — condensed Part 2 topology from issue #1
-- [docs/BACKLOG.md](docs/BACKLOG.md) — Epic 7 scope and out-of-repo Track A
-- [docs/CROSSPLANE.md](docs/CROSSPLANE.md) — IaC mapping (TF → Crossplane)
+- [docs/PLANNING.md](docs/PLANNING.md) — Crossplane + Tailscale + Cloudflare phases
+- [docs/IAC.md](docs/IAC.md) — Terraform replacement mapping
+- [docs/EDGE-NETWORK.md](docs/EDGE-NETWORK.md) — mesh and public edge
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — tier topology
+- [docs/BACKLOG.md](docs/BACKLOG.md) — Epic 7–8 scope
+- [docs/ISSUE-REVISIONS.md](docs/ISSUE-REVISIONS.md) — suggested issue #2 edits
 
-Governed by [lornu-ai/code-governance](https://github.com/lornu-ai/code-governance) (see `.code-governance.toml`).
+Governed by [lornu-ai/code-governance](https://github.com/lornu-ai/code-governance).

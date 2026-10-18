@@ -14,3 +14,12 @@ spec:
   tier1:
     ingressHost: app.k8s.orb.local
     namespace: local-cloud
+  connectivity:
+    tailscale:
+      enabled: false
+      exposeService: api-gateway
+    cloudflare:
+      enabled: false
+      accessRequired: true
+      # zone: example.com
+      # publicHost: app.dev.example.com
