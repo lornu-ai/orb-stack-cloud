@@ -1,0 +1,21 @@
+[package]
+name = "ipaas-control-plane"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "axum Host Control Plane — webhooks, vault, catalog, job queue"
+
+[[bin]]
+name = "ipaas-control-plane"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+ipaas-bun-bridge = { path = "../ipaas-bun-bridge" }
+ipaas-compiler = { path = "../ipaas-compiler" }
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+# Phase 1: axum, sqlx, tower-http, tracing
