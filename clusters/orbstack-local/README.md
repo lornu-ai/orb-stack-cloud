@@ -1,6 +1,6 @@
 # Flux wiring (OrbStack)
 
-Point a Flux `GitRepository` at **this repo** (or add these paths as extra `Kustomization` resources alongside [orb-code](https://github.com/lornu-ai/orb-code)).
+OrbStack-local GitOps only (not fleet oxidizedflux). Point a Flux `GitRepository` at **this repo** or wire paths alongside [orb-code](https://github.com/lornu-ai/orb-code) `clusters/orbstack-local`.
 
 Order:
 

@@ -1,0 +1,19 @@
+name: kustomize-validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  kustomize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kustomize
+        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- /usr/local/bin
+      - name: Build kustomize overlays
+        run: |
+          kustomize build blueprint/tier1
+          kustomize build blueprint/tier2/k8s
+          kustomize build crossplane/local-cloud
+          kustomize build crossplane/providers
+          kustomize build crossplane/providerconfig
