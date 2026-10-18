@@ -2,17 +2,18 @@
 
 **Project:** browser-native AI agents for Gap, hosted on ChromeOS (Crostini) and wired into the Gap / OrbStack Cloud (OSC) mix.
 
+**Wrapped by:** the locked iPaaS Host path — oxidizedgraph Execution Plane + axum Control Plane + warm Bun UDS pool ([OXIDIZEDGRAPH-IPAAS-HOST.md](OXIDIZEDGRAPH-IPAAS-HOST.md)). WebMCP is the in-tab / QA surface; it does **not** own graph execution or the Bun host process.
+
 | Piece | Role |
 |-------|------|
 | **WebMCP** (`document.modelContext`) | In-tab tools: Gap web declares typed, deterministic capabilities (same JSON Schema shape as server MCP) |
 | **chrome-devtools-mcp** | Dev/QA agents drive Chrome via CDP (console, network, performance, agentic Lighthouse) |
 | **Gap** (`lornu-ai/gap`) | Product surface that registers WebMCP tools; iOS voice remains primary UX |
 | **OSC** (this repo) | Personal-cloud / fleet home; ChromeOS is a peer host class next to Mac OrbStack |
+| **oxidizedgraph + axum Host** | Workflow Execution / Control planes ([OXIDIZEDGRAPH-IPAAS-HOST.md](OXIDIZEDGRAPH-IPAAS-HOST.md)) |
 | **oxidizedMCP** | Sovereign skill mesh that can attach `chrome-devtools-mcp` as one skill endpoint |
 
 Upstream: [ChromeDevTools/chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp), W3C ML for the Web CG **WebMCP** draft (Chrome 146–149+ lifecycle).
-
-Linear: [LOR-594](https://linear.app/lornu-ai/issue/LOR-594).
 
 ## Why it belongs in the Gap / OSC mix
 
@@ -117,12 +118,13 @@ Fleet stub: [fleet/chromeos-agents.yaml](../fleet/chromeos-agents.yaml).
 | Gap web `registerTool` + declarative annotations | `lornu-ai/gap` `web/` |
 | Org MCP Workers | `lornu-ai/gap` `edge/` (existing) |
 | Skill mesh attaching chrome-devtools-mcp | `stevedores-org/oxidizedMCP` |
+| oxidizedgraph Execution + axum Host + Bun UDS | `blueprint/ipaas-host/` + [OXIDIZEDGRAPH-IPAAS-HOST.md](OXIDIZEDGRAPH-IPAAS-HOST.md) |
 | Mac gap-hub | `blueprint/gap/` (unchanged) |
 
 ## Acceptance (project bootstrap)
 
 - [ ] This doc + `blueprint/webmcp-chromeos/` land on OSC
-- [ ] Linear epic tracks Gap WebMCP tools + ChromeOS QA host ([LOR-594](https://linear.app/lornu-ai/issue/LOR-594))
+- [ ] Linear epic tracks Gap WebMCP tools + ChromeOS QA host
 - [ ] GROW / OSC README point at the project
 - [ ] Gap web registers ≥1 read-only WebMCP tool behind feature detect
 - [ ] One ChromeOS (or Linux Chrome for Testing) smoke: chrome-devtools-mcp lists tools; WebMCP panel sees Gap tools
@@ -130,6 +132,7 @@ Fleet stub: [fleet/chromeos-agents.yaml](../fleet/chromeos-agents.yaml).
 
 ## Related
 
+- [OXIDIZEDGRAPH-IPAAS-HOST.md](OXIDIZEDGRAPH-IPAAS-HOST.md) — wraps this project in the locked Execution/Control/Bun planes
 - [GAP-DEPLOYMENT-STRATEGY.md](GAP-DEPLOYMENT-STRATEGY.md)
 - [GAP-ON-ORBSTACK.md](GAP-ON-ORBSTACK.md)
 - Linear: [LOR-594](https://linear.app/lornu-ai/issue/LOR-594)
