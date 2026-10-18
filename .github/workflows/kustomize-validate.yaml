@@ -9,7 +9,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install kustomize
-        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- /usr/local/bin
+        run: |
+          set -euo pipefail
+          KUSTOMIZE_VERSION=v5.5.0
+          if command -v kustomize >/dev/null 2>&1; then
+            echo "Using preinstalled $(command -v kustomize) ($(kustomize version --short 2>/dev/null || true))"
+          else
+            curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" \
+              | tar -xz -C /usr/local/bin kustomize
+            chmod +x /usr/local/bin/kustomize
+          fi
+          kustomize version
       - name: Build kustomize overlays
         run: |
           kustomize build blueprint/tier1
