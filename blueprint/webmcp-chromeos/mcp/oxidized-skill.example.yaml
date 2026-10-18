@@ -1,0 +1,16 @@
+# Example oxidizedMCP registry fragment — attach Chrome DevTools MCP as a skill.
+# Copy into a private registry manifest; do not point at production secrets.
+version: 1
+environment: local
+skills:
+  - name: chrome-devtools
+    description: >
+      Chrome DevTools for Agents (CDP via chrome-devtools-mcp). Inspect Gap web
+      console, network, performance, and WebMCP tool registry on owned origins.
+    # Prefer a long-lived local wrapper that execs:
+    #   npx -y chrome-devtools-mcp@latest --no-usage-statistics
+    # or a Podman image that wraps the same binary.
+    endpoint: http://127.0.0.1:9310/mcp
+    enabled: true
+    # Optional offline fallback when you OCI-package the server:
+    # image: ghcr.io/example/chrome-devtools-mcp:latest
