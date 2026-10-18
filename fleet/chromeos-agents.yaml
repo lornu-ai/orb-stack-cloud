@@ -1,0 +1,26 @@
+# Inventory stub for ChromeOS (Chromebook Plus + Crostini) Gap browser-agent hosts.
+# Fill hostname / connect URLs privately; do not commit secrets or CDP endpoints.
+apiVersion: stevedores.org/v1alpha1
+kind: ChromeOSAgentFleet
+metadata:
+  name: gap-webmcp-chromeos
+spec:
+  platform: chromeos
+  runtime: crostini
+  app: gap
+  projects:
+    - webmcp
+    - chrome-devtools-mcp
+  members:
+    - id: chromebook-a
+      role: primary-qa
+      pattern: host-chrome-bridge   # or linux-chrome-for-testing
+      hostname: ""
+      crostiniUser: ""
+      notes: "Gap WebMCP + chrome-devtools-mcp dual loop"
+    - id: chromebook-b
+      role: satellite-qa
+      pattern: linux-chrome-for-testing
+      hostname: ""
+      crostiniUser: ""
+      notes: ""
