@@ -10,6 +10,7 @@ Reference **Personal Cloud** blueprint for [OrbStack](https://orbstack.dev) on A
 | Repo implementation map | [docs/EXECUTION-PLAN.md](docs/EXECUTION-PLAN.md) |
 | **Gap on 3× Apple Silicon Macs** | **[docs/GAP-ON-ORBSTACK.md](docs/GAP-ON-ORBSTACK.md)** |
 | **WebMCP + ChromeOS agents** | **[docs/WEBMCP-CHROMEOS-AGENTS.md](docs/WEBMCP-CHROMEOS-AGENTS.md)** |
+| **iPaaS Host (oxidizedgraph + axum + Bun UDS)** | **[docs/OXIDIZEDGRAPH-IPAAS-HOST.md](docs/OXIDIZEDGRAPH-IPAAS-HOST.md)** |
 
 **No Terraform.** Crossplane on OrbStack K8s is the IaC control plane; Tailscale is the private mesh; Cloudflare is optional public edge (Tunnel / Zero Trust).
 
@@ -27,7 +28,7 @@ Private: `gap.k8s.orb.local`. Public `/ws` stays off until Gap LOR-545.
 
 ### WebMCP + ChromeOS (browser-native agents)
 
-Complementary to Mac OrbStack and iOS voice: Gap web exposes **WebMCP** in-tab tools; ChromeOS Crostini runs **chrome-devtools-mcp** for the CDP QA loop. Blueprint: [`blueprint/webmcp-chromeos/`](blueprint/webmcp-chromeos/). Skill mesh attach: [stevedores-org/oxidizedMCP](https://github.com/stevedores-org/oxidizedMCP). Linear: [LOR-594](https://linear.app/lornu-ai/issue/LOR-594).
+Complementary to Mac OrbStack and iOS voice: Gap web exposes **WebMCP** in-tab tools; ChromeOS Crostini runs **chrome-devtools-mcp** for the CDP QA loop. Blueprint: [`blueprint/webmcp-chromeos/`](blueprint/webmcp-chromeos/). Skill mesh attach: [stevedores-org/oxidizedMCP](https://github.com/stevedores-org/oxidizedMCP).
 
 ## Tiers (Epic 7)
 
@@ -38,6 +39,7 @@ Complementary to Mac OrbStack and iOS voice: Gap web exposes **WebMCP** in-tab t
 | **3** | Postgres/Vault via `XOrbMachine` + cloud-init + tailscale | `blueprint/tier3-cloudinit/`, `crossplane/orbmachine/` |
 | **Gap** | gap-hub sync plane | `blueprint/gap/` |
 | **WebMCP** | ChromeOS / browser agents (docs + Crostini bridge) | `blueprint/webmcp-chromeos/` |
+| **iPaaS** | oxidizedgraph Execution + axum Host + Bun UDS pool | `blueprint/ipaas-host/` |
 
 ## Quick start (interim)
 
