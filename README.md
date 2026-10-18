@@ -51,4 +51,4 @@ Phases 2–4 (Tailscale enrollment, LocalStack XRDs, Cloudflare edge, tri-path E
 
 **CI:** GitHub Actions validates manifests and runs **LocalStack (AWS)**, **Cloudflare**, and **GCP** smoke tests — [docs/CI.md](docs/CI.md).
 
-**OSC UI (Stitch):** [web/](web/) · deploy with [k8s/overlays/orbstack-local](k8s/overlays/orbstack-local) or [prod-stvedores](k8s/overlays/prod-stvedores).
+**OSC UI (Stitch):** [web/](web/) · prod edge **`osc.stevedores.org`** — [iac/](iac/) · [k8s/overlays/prod-stevedores](k8s/overlays/prod-stevedores) · local [orbstack-local](k8s/overlays/orbstack-local).

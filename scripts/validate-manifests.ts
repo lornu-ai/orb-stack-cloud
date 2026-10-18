@@ -6,7 +6,7 @@ import { join, relative } from "node:path";
 import { parse, parseAllDocuments } from "yaml";
 
 const ROOT = join(import.meta.dir, "..");
-const K8S_DIRS = ["crossplane", "tier1", "k8s"];
+const K8S_DIRS = ["crossplane", "tier1", "k8s", "iac"];
 const REQUIRED_DOCS = [
   "docs/EXECUTION_PLAN.md",
   "docs/IMPLEMENTATION_STATUS.md",

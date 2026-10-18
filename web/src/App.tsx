@@ -75,10 +75,10 @@ const INITIAL_CLAIMS: CrossplaneClaim[] = [
     ready: true,
   },
   {
-    name: "osc-stvedores-ingress",
+    name: "osc-stevedores-ingress",
     kind: "XCloudflareEdgeIngress",
     arch: "arm64 (Native)",
-    endpoint: "https://osc.stvedores.org",
+    endpoint: "https://osc.stevedores.org",
     synced: true,
     ready: true,
   },

@@ -7,7 +7,7 @@ and **Story 7.4** (`XCloudflareEdgeIngress` + tri-path public ingress).
 
 | Component | Role |
 | --- | --- |
-| **provider-cloudflare** | DNS CNAME (`app-<dev>.dev.example.com`), Tunnel config where supported |
+| **provider-cloudflare** | DNS for **`osc.stevedores.org`** (see [iac/domains/stevedores.yaml](../iac/domains/stevedores.yaml)) |
 | **cloudflared** | Connector in K8s (Composition) or on Mac; routes to `api-gateway` Service |
 | **Zero Trust** | Access policies for webhook testing without opening home ports |
 
@@ -39,6 +39,6 @@ Stub: `crossplane/install/provider-cloudflare.yaml`
 | --- | --- |
 | Local | `https://app.k8s.orb.local` |
 | Tailnet | `https://orb-api-gateway.<tailnet>.ts.net` |
-| Public | `https://app-<dev>.dev.example.com` |
+| Public | `https://osc.stevedores.org` · PR: `pr-<run>.osc.stevedores.org` |
 
 See [TAILSCALE.md](./TAILSCALE.md) for mesh path and [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) §6 NFR table.

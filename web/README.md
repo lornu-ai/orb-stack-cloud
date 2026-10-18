@@ -5,7 +5,7 @@ Google Stitch export: tri-path ingress switcher, NFR gauges, Crossplane topology
 | Environment | Hostname | Kustomize |
 | --- | --- | --- |
 | OrbStack local | `osc.k8s.orb.local` | `k8s/overlays/orbstack-local` |
-| Production / CF edge | `osc.stvedores.org` | `k8s/overlays/prod-stvedores` |
+| Production / CF edge | `osc.stevedores.org` | `k8s/overlays/prod-stevedores` |
 
 ## Dev
 
@@ -27,8 +27,8 @@ podman build -f Containerfile -t osc-web:local .
 kubectl kustomize k8s/overlays/orbstack-local
 kubectl apply -k k8s/overlays/orbstack-local
 
-kubectl kustomize k8s/overlays/prod-stvedores
-kubectl apply -k k8s/overlays/prod-stvedores
+kubectl kustomize k8s/overlays/prod-stevedores
+kubectl apply -k k8s/overlays/prod-stevedores
 ```
 
 Local overlay includes `ingress-orb-local` LoadBalancer for clusters without Gateway API; `httproute-local` targets `osc.k8s.orb.local` when `orbstack-gateway` exists.

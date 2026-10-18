@@ -6,8 +6,9 @@ Program backlog: [issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5
 ## [Unreleased] — branch `feat/crossplane-epic7` ([PR #3](https://github.com/lornu-ai/orb-stack-cloud/pull/3))
 
 ### Added
-- **Google Stitch UI** — `web/` React control plane (`osc.k8s.orb.local` / `osc.stvedores.org`).
-- **Kustomize** — `k8s/base` + overlays `orbstack-local` and `prod-stvedores` (HTTPRoute + CF edge claim).
+- **Google Stitch UI** — `web/` React control plane (`osc.k8s.orb.local` / **`osc.stevedores.org`**).
+- **IaC** — `iac/domains/stevedores.yaml` + Crossplane `osc-stevedores-edge-claim.yaml`.
+- **Kustomize** — `k8s/base` + overlays `orbstack-local` and `prod-stevedores` (HTTPRoute + CF edge claim).
 - Crossplane Epic 7 reference stack: XRDs, compositions, cloud-init ConfigMaps, `OrbStackMachine` CRD.
 - Bun `orbstack-controller` reconciling machines via `orb create`.
 - Tier 1 K8s manifests (`api-gateway`, `auth-service`) and Tier 2 `docker-compose.yml` (Rosetta amd64 + LocalStack).

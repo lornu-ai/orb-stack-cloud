@@ -11,14 +11,14 @@ export function TopNavHeader({ activePath, onSelectPath, runId }: Props) {
   const paths: { id: IngressPath; label: string; host: string }[] = [
     { id: "orb-local", label: "Path A: Orb Local", host: "osc.k8s.orb.local" },
     { id: "tailscale-mesh", label: "Path B: Tailnet", host: "orb-api.ts.net" },
-    { id: "cloudflare-zt", label: "Path C: CF Zero Trust", host: "osc.stvedores.org" },
+    { id: "cloudflare-zt", label: "Path C: CF Zero Trust", host: "osc.stevedores.org" },
   ];
 
   return (
     <header className="border-b border-zinc-800 bg-zinc-950 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3">
         <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="font-mono text-lg font-bold tracking-tight text-zinc-100">osc.stvedores.org</span>
+        <span className="font-mono text-lg font-bold tracking-tight text-zinc-100">osc.stevedores.org</span>
         <span className="rounded bg-zinc-800 px-2 py-0.5 font-mono text-xs text-zinc-400">run #{runId}</span>
       </div>
 

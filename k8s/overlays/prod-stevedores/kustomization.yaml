@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: stevedores
 resources:
   - ../../base
+  - ../../../iac/domains/stevedores.yaml
   - httproute-prod.yaml
   - cloudflare-edge-claim.yaml
 images:
