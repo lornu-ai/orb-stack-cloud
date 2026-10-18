@@ -1,0 +1,26 @@
+# Inventory stub for the 3× Apple Silicon Gap / OrbStack fleet.
+# Fill hostname / Tailscale MagicDNS privately; do not commit secrets.
+apiVersion: stevedores.org/v1alpha1
+kind: AppleSiliconFleet
+metadata:
+  name: gap-orbstack
+spec:
+  platform: orbstack
+  arch: arm64
+  app: gap
+  members:
+    - id: mac-a
+      role: primary
+      overlay: blueprint/gap/overlays/mac-a
+      hostname: ""
+      tailscaleMagicDNS: ""
+    - id: mac-b
+      role: satellite
+      overlay: blueprint/gap/overlays/mac-b
+      hostname: ""
+      tailscaleMagicDNS: ""
+    - id: mac-c
+      role: satellite
+      overlay: blueprint/gap/overlays/mac-c
+      hostname: ""
+      tailscaleMagicDNS: ""
