@@ -1,0 +1,40 @@
+# Story 7.2 — desired state for Tier 3 (requires XOrbMachine + Epic 4.2 host bridge).
+# Until then: tools/bootstrap-tier3 with blueprint/tier3-cloudinit/*.yaml
+---
+apiVersion: machines.cloud.orb.local/v1alpha1
+kind: OrbMachineClaim
+metadata:
+  name: postgres-db
+  namespace: local-cloud
+spec:
+  compositionRef:
+    name: orb-machine-postgres
+  distro: ubuntu
+  name: postgres
+  memory: 2Gi
+  cpus: 2
+  cloudInitConfigMapRef:
+    name: tier3-postgres-userdata
+    namespace: local-cloud
+  tailscale:
+    enabled: true
+    hostname: orb-postgres
+---
+apiVersion: machines.cloud.orb.local/v1alpha1
+kind: OrbMachineClaim
+metadata:
+  name: vault-kms
+  namespace: local-cloud
+spec:
+  compositionRef:
+    name: orb-machine-vault
+  distro: debian
+  name: vault
+  memory: 2Gi
+  cpus: 2
+  cloudInitConfigMapRef:
+    name: tier3-vault-userdata
+    namespace: local-cloud
+  tailscale:
+    enabled: true
+    hostname: orb-vault

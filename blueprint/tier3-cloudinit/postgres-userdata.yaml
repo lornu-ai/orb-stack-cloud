@@ -32,5 +32,10 @@ runcmd:
   - sed -i "s/127.0.0.1\\/32/0.0.0.0\\/0/" /etc/postgresql/16/main/pg_hba.conf
   - systemctl enable --now postgresql prometheus-node-exporter
   - sudo -u postgres psql -f /var/lib/postgresql/bootstrap.sql
+  - |
+    if [ -n "${TS_AUTHKEY}" ]; then
+      curl -fsSL https://tailscale.com/install.sh | sh
+      tailscale up --authkey="${TS_AUTHKEY}" --ssh --hostname=orb-postgres
+    fi
 
 final_message: "postgres.orb.local tier3 cloud-init complete"

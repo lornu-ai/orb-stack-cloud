@@ -1,0 +1,12 @@
+# Story 7.3 — LocalStack S3 + SQS via Crossplane (requires provider-aws + aws-localstack ProviderConfig).
+apiVersion: localstack.cloud.orb.local/v1alpha1
+kind: EventBusClaim
+metadata:
+  name: billing-event-bus
+  namespace: local-cloud
+spec:
+  compositionRef:
+    name: event-bus-localstack
+  bucketName: invoices-archive
+  queueName: billing-events
+  region: us-east-1

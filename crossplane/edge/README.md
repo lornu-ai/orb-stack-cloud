@@ -1,12 +1,11 @@
-# Edge Compositions (planned)
+# Edge & mesh (Story 7.4)
 
-Crossplane-managed **Cloudflare** and **Tailscale** resources for orb-stack-cloud. No Terraform.
+| Path | Technology | Repo |
+|------|------------|------|
+| Local | OrbStack Ingress `*.k8s.orb.local` | `blueprint/tier1/` |
+| Private | **Tailscale Kubernetes Operator** | `blueprint/edge/tailscale/`, claim `spec.connectivity.tailscale` |
+| Public | **Cloudflare Tunnel + Access** | `edge/cloudflare/` — `XCloudflareEdgeIngress` |
 
-| Directory | Phase | Contents |
-|-----------|-------|----------|
-| `cloudflare/` | P2 | XRDs/Compositions: Tunnel, DNS, Access (Upjet provider-cloudflare) |
-| `tailscale/` | P1 | Operator install + Composition wiring from `spec.connectivity.tailscale` |
+Planning XRD: `cloudflare/xrd-cloudflare-edge-ingress.yaml`.
 
-Until P1/P2 land, use [docs/EDGE-NETWORK.md](../../docs/EDGE-NETWORK.md) for manual tailnet + optional `cloudflared` bootstrap.
-
-Secrets: External Secrets Operator only — see `orb-code` ESO patterns.
+Do not apply planning XRDs until `provider-cloudflare` and compositions are wired — see [docs/EXECUTION-PLAN.md](../../docs/EXECUTION-PLAN.md).

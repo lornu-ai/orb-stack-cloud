@@ -1,26 +1,26 @@
 # Backlog alignment
 
-Source: **[issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2)** — revised for **Crossplane + Tailscale + Cloudflare** ([ISSUE-REVISIONS.md](ISSUE-REVISIONS.md)).
+| Document | Role |
+|----------|------|
+| **[Issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** | **Current** execution plan (Crossplane, Tailscale, Cloudflare) |
+| [Issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) | Original Terraform-centric plan (superseded for IaC) |
+| [Issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) | Solution architecture |
 
-## In scope
+## Track B — in this repository
 
-| Epic | Stories | Delivery | Phase |
-|------|---------|----------|-------|
-| **7** | 7.1 Tier 3 cloud-init | `blueprint/tier3-cloudinit/`, `tools/bootstrap-tier3`, Crossplane claim | P0 |
-| **7** | 7.2 Tier 2 Compose | `blueprint/tier2/docker-compose.yml` | P0 |
-| **7** | 7.3 Tier 1 K8s | `blueprint/tier1/`, `LocalCloudBlueprintClaim` | P0 |
-| **7** | 7.4 Mesh + edge IaC (proposed) | `spec.connectivity`, `crossplane/edge/` | P1–P2 |
-| **8** | Hardening | Tailnet ACLs, CF Access, no public stateful ports | P3 |
+| Epic | Stories | Repo |
+|------|---------|------|
+| **7** | 7.1 Crossplane + XRDs | `crossplane/` |
+| **7** | 7.2 Tier 3 + Tailscale | `blueprint/tier3-cloudinit/`, `examples/tier3-stateful-claims.yaml` |
+| **7** | 7.3 Tier 2 + LocalStack CRs | `blueprint/tier2/`, `examples/tier2-event-bus-claim.yaml` |
+| **7** | 7.4 Tier 1 + edge/mesh | `blueprint/tier1/`, `crossplane/edge/`, claim `spec.connectivity` |
 
-## Explicitly retired from planning
+## Track A — OrbStack product (Epics 1–6)
 
-- Terraform / OpenTofu modules and state
-- Ansible playbooks as provisioning SoT
-- Manual-only Cloudflare dashboard workflows for environments covered by this blueprint
+Kernel, VirtioFS, Rosetta, DNS mesh, Epic **4.2** host provisioning bridge, menu bar — **not implemented in git**. Required before full **7.1 `XOrbMachine`** reconciliation.
 
-## Personas
+## Retired
 
-- **@CloudArch** — Crossplane Compositions (K8s, Cloudflare, Tailscale wiring).
-- **@NetEng** — tailnet routes, Tunnel origins, Access policies.
-- **@AppDev** — tier runbooks and [VALIDATION.md](VALIDATION.md).
-- **Track A engineers** — OrbStack product (Epics 1–6); out of repo.
+- Terraform / OpenTofu / Ansible as provisioning SoT
+
+See [EXECUTION-PLAN.md](EXECUTION-PLAN.md) for story-level status.

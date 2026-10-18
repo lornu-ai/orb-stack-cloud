@@ -1,0 +1,21 @@
+# Story 7.1 / 7.3 — install when LocalStack Tier 2 is up.
+# Apply ProviderConfig aws-localstack before Compositions using S3/SQS.
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws
+  labels:
+    lornu.ai/managed-by: crossplane
+    orbstack.lornu.ai/target: localstack
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-s3:v1.19.0
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-sqs
+  labels:
+    lornu.ai/managed-by: crossplane
+    orbstack.lornu.ai/target: localstack
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-sqs:v1.19.0

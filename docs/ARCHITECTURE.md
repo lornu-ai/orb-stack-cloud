@@ -1,35 +1,24 @@
 # Reference local cloud architecture
 
-Full platform-engine narrative: **[issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)**.  
-Control-plane planning: **[PLANNING.md](PLANNING.md)** (Crossplane, Tailscale, Cloudflare — no Terraform).
+- **Engine / platform:** [issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)
+- **Execution plan & topology diagram:** [issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) §1
 
-## Logical topology (Epic 7)
+## Tiers + control plane
 
 ```
-                    ┌──────────────── Cloudflare (optional P2) ────────────────┐
-                    │  DNS · Tunnel · Access                                  │
-                    └───────────────────────────┬─────────────────────────────┘
-                                                │
-                    ┌──────────────── Tailscale tailnet (P1+) ─────────────────┐
-                    │  Mac · K8s operator · remote CI                          │
-                    └───────────────────────────┬─────────────────────────────┘
-                                                │
-macOS (OrbStack) ───────────────────────────────┴──────────────────────────────
-  │
-  ├── Tier 3 — Linux machines (cloud-init)
-  │     postgres.orb.local:5432 · vault.orb.local:8200
-  │
-  ├── Tier 2 — Containers
-  │     billing.internal.orb.local · s3.aws.orb.local (LocalStack)
-  │
-  └── Tier 1 — Integrated Kubernetes
-        app.k8s.orb.local → api-gateway → auth-service
+Cloudflare (public)          Tailscale (private mesh)
+         \                           /
+          v                         v
+    Tier 1: K8s + Crossplane + cloudflared + Tailscale Operator
+         |         api-gateway / auth (*.k8s.orb.local)
+         +---------+------------------+
+                   v
+    Tier 2: Compose — billing (amd64), LocalStack (arm64)
+                   |
+                   v
+    Tier 3: Linux machines — postgres / vault (cloud-init, tailscaled)
 ```
 
-**Crossplane** reconciles desired state (Tier 1 today; edge/mesh Compositions in P1–P2). **Tailscale** extends tiers to remote actors without public DB ports. **Cloudflare** terminates HTTPS and policy for optional public hostnames.
+Crossplane reconciles Claims against LocalStack, Cloudflare APIs, Kubernetes, and (when available) the OrbStack machine bridge.
 
-Local-only dev uses OrbStack DNS (`/etc/resolver/orb.local`, `dev.orbstack.domains`, `*.k8s.orb.local`) with no edge enabled.
-
-## IaC
-
-No Terraform in this track. See [IAC.md](IAC.md) and [EDGE-NETWORK.md](EDGE-NETWORK.md).
+Details: [PLANNING.md](PLANNING.md), [EDGE-NETWORK.md](EDGE-NETWORK.md).

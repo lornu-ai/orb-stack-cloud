@@ -13,6 +13,6 @@ Or use the Crossplane-backed bootstrap tool from repo root:
 cd tools/bootstrap-tier3 && bun install && bun run bootstrap
 ```
 
-Set `ORB_SSH_PUBKEY` in the environment before rendering user-data (bootstrap tool substitutes it).
+Set `ORB_SSH_PUBKEY` and optional `TS_AUTHKEY` before bootstrap (Story 7.2 tailnet enrollment).
 
 Acceptance: `postgres.orb.local:5432` (user `app`) and `http://vault.orb.local:8200/v1/sys/health`.

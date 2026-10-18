@@ -1,0 +1,17 @@
+# Endpoints for provider-upjet-aws against OrbStack LocalStack (Story 7.3).
+# Requires LocalStack reachable at s3.aws.orb.local / port 4566 from provider pods.
+apiVersion: aws.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: aws-localstack
+  labels:
+    orbstack.lornu.ai/target: localstack
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: aws-localstack-creds
+      key: credentials
+  # Upjet: endpoint overrides via environment on DeploymentRuntimeConfig (planned).
+  # skip_credentials_validation / s3_use_path_style documented in crossplane/localstack/README.md

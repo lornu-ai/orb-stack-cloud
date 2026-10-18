@@ -1,22 +1,28 @@
-# Validation (Epic 7 acceptance)
+# Validation (Epic 7 — issue #5)
 
-Run on a single Mac with OrbStack Kubernetes and Docker enabled.
+Program DoD: [DOD.md](DOD.md) (tri-path ingress, Terraform-free reconciliation).
 
 ## Tier 3
 
-After `bun run bootstrap` in `tools/bootstrap-tier3`:
-
 ```bash
+# Interim until OrbMachineClaim reconciles:
+cd tools/bootstrap-tier3 && bun install
+ORB_SSH_PUBKEY='…' TS_AUTHKEY='…' bun run bootstrap
+
 psql "postgresql://app:localcloud@postgres.orb.local:5432/microservices" -c 'select 1'
-curl -sk https://vault.orb.local:8200/v1/sys/health
+curl -sk http://vault.orb.local:8200/v1/sys/health
+tailscale status   # expect orb-postgres / orb-vault when TS_AUTHKEY set
 ```
 
-## Tier 2
+## Tier 2 + LocalStack CRs
 
 ```bash
 docker compose -f blueprint/tier2/docker-compose.yml up -d
 curl -sk https://billing.internal.orb.local/health
 curl -sk https://s3.aws.orb.local/_localstack/health
+
+# After EventBusClaim reconciles (Story 7.3):
+aws --endpoint-url=http://s3.aws.orb.local:4566 s3 ls
 ```
 
 ## Tier 1
@@ -27,17 +33,19 @@ curl -sk https://app.k8s.orb.local/healthz
 curl -sk https://app.k8s.orb.local/api/v1/checkout
 ```
 
-Story 7.3 target: checkout returns **200** when Tier 2 and Tier 3 are up and gateway ConfigMap upstreams resolve.
-
-## Crossplane claim
+## Crossplane
 
 ```bash
 kubectl apply -f examples/claim-reference-local-cloud.yaml
-kubectl get localcloudblueprintclaims,localcloudblueprints
+kubectl get localcloudblueprintclaims
 ```
 
-## Tailscale and Cloudflare (optional P1–P2)
+## Tri-path ingress (Story 7.4 — full DoD)
 
-**P1 — Tailscale:** From a second device on the same tailnet, reach Tier 1 via operator-published hostname (see `spec.connectivity.tailscale` on the claim). Tier 3 Postgres/Vault must respond on tailnet or Mac-only paths, not the public internet.
+| Path | URL |
+|------|-----|
+| Local | `https://app.k8s.orb.local/api/v1/checkout` |
+| Tailnet | `https://<gateway>.<tailnet>.ts.net/api/v1/checkout` |
+| Cloudflare | `https://app-dev.example.com/api/v1/checkout` |
 
-**P2 — Cloudflare:** With Tunnel + Access applied via Crossplane (planned), `curl` the public hostname from an off-tailnet network; unauthenticated requests should fail Access; authenticated session should reach `https://app.k8s.orb.local` equivalent origin.
+All should return **HTTP 200** with Tier 2 + Tier 3 up and vault reachable.

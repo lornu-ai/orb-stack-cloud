@@ -1,0 +1,14 @@
+# Story 7.4 — public edge (requires provider-cloudflare + cloudflared Deployment composition).
+apiVersion: edge.cloud.orb.local/v1alpha1
+kind: CloudflareEdgeIngressClaim
+metadata:
+  name: app-dev-edge
+  namespace: local-cloud
+spec:
+  compositionRef:
+    name: cloudflare-edge-ingress
+  zone: example.com
+  publicHost: app-dev.example.com
+  upstreamService: api-gateway.local-cloud.svc.cluster.local
+  upstreamPort: 80
+  accessRequired: true

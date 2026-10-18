@@ -10,7 +10,10 @@ const tier3Dir = join(repoRoot, "blueprint/tier3-cloudinit");
 function render(path: string): string {
   const raw = readFileSync(path, "utf8");
   const pubkey = process.env.ORB_SSH_PUBKEY ?? "";
-  return raw.replaceAll("${ORB_SSH_PUBKEY}", pubkey);
+  const tsAuthKey = process.env.TS_AUTHKEY ?? "";
+  return raw
+    .replaceAll("${ORB_SSH_PUBKEY}", pubkey)
+    .replaceAll("${TS_AUTHKEY}", tsAuthKey);
 }
 
 function orbCreate(distro: string, name: string, userdataPath: string): void {

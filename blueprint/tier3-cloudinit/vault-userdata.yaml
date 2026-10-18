@@ -34,5 +34,10 @@ runcmd:
   - mkdir -p /var/lib/vault/data
   - chown -R vault:vault /var/lib/vault
   - systemctl enable --now vault
+  - |
+    if [ -n "${TS_AUTHKEY}" ]; then
+      curl -fsSL https://tailscale.com/install.sh | sh
+      tailscale up --authkey="${TS_AUTHKEY}" --ssh --hostname=orb-vault
+    fi
 
 final_message: "vault.orb.local tier3 cloud-init complete"

@@ -1,45 +1,36 @@
-# Infrastructure as code — Crossplane (not Terraform)
+# Infrastructure as code — Crossplane only
 
-Story 7.1 originally specified **Terraform/OpenTofu** and Ansible. **Crossplane is the only IaC engine** for this program track.
+Canonical stories: **[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** Epic 7.
 
-## Mapping
+## Terraform → Crossplane
 
-| Legacy (issue #2) | Crossplane |
-|-------------------|------------|
-| TF module variables | `LocalCloudBlueprintClaim.spec` (+ future `spec.connectivity`) |
-| `terraform apply` | Claim reconcile + provider CRs |
-| TF Cloudflare provider | `crossplane/edge/cloudflare/` Compositions (planned) |
-| TF null_resource / local-exec | **Forbidden** — use Compositions or Bun tools that call stable APIs (`orb`, `tailscale`, CF API via providers) |
-| Ansible post-config | Idempotent **cloud-init**; mesh/edge config via Crossplane |
+| Legacy | Crossplane |
+|--------|------------|
+| TF modules / state | Claims + Compositions |
+| `terraform apply` (VMs) | `OrbMachineClaim` → Epic 4.2 bridge → `orb create` |
+| TF AWS provider | `EventBusClaim` + `provider-upjet-aws` → LocalStack |
+| TF Cloudflare | `CloudflareEdgeIngressClaim` + `provider-cloudflare` |
+| Ansible | cloud-init + operator reconciliation |
 
-## Installed today
+## Provider matrix (Story 7.1)
 
-| Resource | Purpose |
-|----------|---------|
-| `xlocalcloudblueprints.orbstack.lornu.ai` | Composite API |
-| `reference-local-cloud` Composition | Tier 1 via **provider-kubernetes** `Object` |
-| `ProviderConfig` `orbstack-local` | In-cluster identity |
+See [crossplane/providers/README.md](../crossplane/providers/README.md).
 
-## Planned providers (edge)
+## Implemented vs planning
 
-| Provider package | Scope |
-|------------------|--------|
-| `provider-kubernetes` | Tier 1, in-cluster operators (Tailscale, cloudflared) |
-| `provider-cloudflare` (Upjet) | DNS, Tunnel, Access — mirror org `infra-code` layout |
-| Tailscale CRDs via operator + optional Crossplane **Object** wrappers | Tailnet exposure for Services |
+| Resource | Status |
+|----------|--------|
+| `LocalCloudBlueprintClaim` + `reference-local-cloud` | Active |
+| `OrbMachineClaim` | Planning — use `tools/bootstrap-tier3` |
+| `EventBusClaim` | Planning — LocalStack + AWS providers |
+| `CloudflareEdgeIngressClaim` | Planning |
 
-Secrets: **External Secrets Operator** + vault/GSM paths (same as `orb-code` / fleet); never commit API tokens.
+Active kustomize: `crossplane/local-cloud`, `crossplane/providers/provider-kubernetes.yaml` only. Planning XRDs are **not** in root `crossplane/kustomization.yaml` until reconcilers exist.
 
-## Tier 3 exception
+## Tier 3 interim
 
-OrbStack **`orb create`** is a **runtime API**, not a Crossplane provider. Flow:
+```bash
+ORB_SSH_PUBKEY='…' TS_AUTHKEY='…' bun run bootstrap   # tools/bootstrap-tier3
+```
 
-1. Desired state in git (`blueprint/tier3-cloudinit/`).
-2. Optional Claim field `spec.tier3` documents hostnames for mesh/edge.
-3. `tools/bootstrap-tier3` renders user-data and invokes `orb create`.
-
-This replaces a hypothetical `terraform-provider-orb` without pretending Terraform state tracks Linux machines.
-
-## Optional: Tier 3 on Kubernetes
-
-`spec.tier3.mode: kubernetes` — Postgres/Vault as in-cluster workloads (CI only). Fully Crossplane-managed when Composition branch lands.
+`TS_AUTHKEY` enrolls machines on the tailnet (Story 7.2).
