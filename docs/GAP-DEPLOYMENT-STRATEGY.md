@@ -27,8 +27,6 @@ It is the **infrastructure reference** for OrbStack on Apple Silicon (Crossplane
 
 ```
 GAP iOS (interactive voice) ──┐
-GAP Web                       ─�```
-GAP iOS (interactive voice) ──┐
 GAP Web                       ─┼── Cloudflare Access ── gap.airesearches.app (Workers)
                                │         │
                                │         └── Tunnel / WSS → OrbStack gap-hub  (only after WS auth)
