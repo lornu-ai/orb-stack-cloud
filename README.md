@@ -8,8 +8,21 @@ Reference **Personal Cloud** blueprint for [OrbStack](https://orbstack.dev) on A
 | Solution architecture | [Issue #1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) |
 | **Execution plan (Crossplane · Tailscale · Cloudflare)** | **[Issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** |
 | Repo implementation map | [docs/EXECUTION-PLAN.md](docs/EXECUTION-PLAN.md) |
+| **Gap on 3× Apple Silicon Macs** | **[docs/GAP-ON-ORBSTACK.md](docs/GAP-ON-ORBSTACK.md)** |
 
 **No Terraform.** Crossplane on OrbStack K8s is the IaC control plane; Tailscale is the private mesh; Cloudflare is optional public edge (Tunnel / Zero Trust).
+
+## Gap app (Release 0)
+
+Gap (`lornu-ai/gap`) **gap-hub** deploys on this OrbStack cluster on each of the three Macs:
+
+```bash
+kubectl apply -k blueprint/gap/overlays/mac-a   # primary hub
+kubectl apply -k blueprint/gap/overlays/mac-b   # satellite
+kubectl apply -k blueprint/gap/overlays/mac-c   # satellite
+```
+
+Private: `gap.k8s.orb.local`. Public `/ws` stays off until Gap LOR-545.
 
 ## Tiers (Epic 7)
 
@@ -18,6 +31,7 @@ Reference **Personal Cloud** blueprint for [OrbStack](https://orbstack.dev) on A
 | **1** | api-gateway, auth, Crossplane, cloudflared, TS operator | `blueprint/tier1/`, `crossplane/local-cloud/` |
 | **2** | amd64 billing + LocalStack; `XEventBus` | `blueprint/tier2/` |
 | **3** | Postgres/Vault via `XOrbMachine` + cloud-init + tailscale | `blueprint/tier3-cloudinit/`, `crossplane/orbmachine/` |
+| **Gap** | gap-hub sync plane | `blueprint/gap/` |
 
 ## Quick start (interim)
 
@@ -26,12 +40,13 @@ cd tools/bootstrap-tier3 && bun install
 ORB_SSH_PUBKEY='…' TS_AUTHKEY='…' bun run bootstrap
 docker compose -f blueprint/tier2/docker-compose.yml up -d
 kubectl apply -k blueprint/tier1
+kubectl apply -k blueprint/gap/overlays/mac-a
 ```
 
 Claims: [examples/](examples/README.md). Validation: [docs/VALIDATION.md](docs/VALIDATION.md). AWS CLI: **`aws --profile lornu-ai`** ([docs/AWS.md](docs/AWS.md)).
 
 ## Docs
 
-- [docs/PLANNING.md](docs/PLANNING.md) · [docs/IAC.md](docs/IAC.md) · [docs/DOD.md](docs/DOD.md) · [docs/EDGE-NETWORK.md](docs/EDGE-NETWORK.md)
+- [docs/PLANNING.md](docs/PLANNING.md) · [docs/IAC.md](docs/IAC.md) · [docs/GAP-ON-ORBSTACK.md](docs/GAP-ON-ORBSTACK.md) · [docs/DOD.md](docs/DOD.md) · [docs/EDGE-NETWORK.md](docs/EDGE-NETWORK.md)
 
 Governed by [code-governance](https://github.com/lornu-ai/code-governance) (`.code-governance.toml`).
