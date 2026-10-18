@@ -1,5 +1,6 @@
 # Endpoints for provider-upjet-aws against OrbStack LocalStack (Story 7.3).
 # Requires LocalStack reachable at s3.aws.orb.local / port 4566 from provider pods.
+# Host CLI checks: aws --profile lornu-ai --endpoint-url=http://s3.aws.orb.local:4566 s3 ls
 apiVersion: aws.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:

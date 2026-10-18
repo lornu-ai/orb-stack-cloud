@@ -13,3 +13,5 @@ Target provider set on OrbStack Kubernetes — **no Terraform**.
 Install order: Crossplane core → functions (`patch-and-transform`) → providers → `ProviderConfig` → XRDs/Compositions.
 
 Secrets: ESO only (`cloudflare-api-token`, `tailscale-oauth`, `TS_AUTHKEY` for cloud-init — never in git).
+
+**AWS CLI (developers):** `aws --profile lornu-ai` — see [docs/AWS.md](../../docs/AWS.md).

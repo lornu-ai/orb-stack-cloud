@@ -27,7 +27,7 @@ docker compose -f blueprint/tier2/docker-compose.yml up -d
 kubectl apply -k blueprint/tier1
 ```
 
-Claims: [examples/](examples/README.md). Validation: [docs/VALIDATION.md](docs/VALIDATION.md).
+Claims: [examples/](examples/README.md). Validation: [docs/VALIDATION.md](docs/VALIDATION.md). AWS CLI: **`aws --profile lornu-ai`** ([docs/AWS.md](docs/AWS.md)).
 
 ## Docs
 

@@ -22,7 +22,7 @@ curl -sk https://billing.internal.orb.local/health
 curl -sk https://s3.aws.orb.local/_localstack/health
 
 # After EventBusClaim reconciles (Story 7.3):
-aws --endpoint-url=http://s3.aws.orb.local:4566 s3 ls
+aws --profile lornu-ai --endpoint-url=http://s3.aws.orb.local:4566 s3 ls
 ```
 
 ## Tier 1
