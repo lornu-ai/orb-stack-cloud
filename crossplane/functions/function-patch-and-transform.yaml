@@ -1,0 +1,9 @@
+# Called by every Pipeline-mode Composition in this repo (crossplane/local-cloud/).
+apiVersion: pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+  name: function-patch-and-transform
+  labels:
+    lornu.ai/managed-by: crossplane
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/function-patch-and-transform:v0.11.1

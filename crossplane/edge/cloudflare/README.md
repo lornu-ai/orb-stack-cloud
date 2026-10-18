@@ -3,7 +3,7 @@
 Composition resources (via **provider-cloudflare** + **provider-kubernetes**):
 
 1. Cloudflare Tunnel (remote-managed token)
-2. DNS CNAME `app-<dev>.dev.example.com`
+2. DNS CNAME `osc.stevedores.org` (per-run CI tunnels: `osc-pr-<run_id>.stevedores.org`)
 3. Zero Trust Access application (optional `accessRequired`)
 4. Deployment: `cloudflared` → upstream `http://api-gateway.local-cloud.svc.cluster.local`
 

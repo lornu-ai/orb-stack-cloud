@@ -2,7 +2,7 @@
 apiVersion: edge.cloud.orb.local/v1alpha1
 kind: CloudflareEdgeIngressClaim
 metadata:
-  name: app-dev-edge
+  name: osc-edge
   namespace: local-cloud
 spec:
   compositionRef:
