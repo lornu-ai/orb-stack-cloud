@@ -30,9 +30,20 @@ Public ingress and remote collaboration **must not** rely on Terraform or manual
 
 | Scenario | Pattern |
 |----------|---------|
-| Share `https://app.dev.example.com` externally | **Remote-managed Tunnel** + DNS CNAME; `cloudflared` on Mac or Deployment in `local-cloud` namespace |
+| Share `https://osc.stevedores.org` externally | **Remote-managed Tunnel** + DNS CNAME; `cloudflared` on Mac or Deployment in `local-cloud` namespace |
 | Protect `/api/v1/checkout` | **Access** application + reusable policies (Crossplane), IdP per org standard |
 | LocalStack / billing demo URLs | Prefer OrbStack `dev.orbstack.domains` on Mac; optional CF **public hostname** only when demo leaves the machine |
+
+### Hostnames
+
+| Host | Use |
+|------|-----|
+| `osc.stevedores.org` | Stable public host for the reference local cloud |
+| `osc-pr-<run_id>.stevedores.org` | Ephemeral tunnel per CI run, deleted by the run's cleanup step |
+
+Public hosts stay **one label below `stevedores.org`**. The zone's Universal SSL certificate covers `stevedores.org` and `*.stevedores.org` only, so a deeper name such as `pr-42.ci.osc.stevedores.org` would fail TLS at the edge unless Advanced Certificate Manager is bought. Tier 1 validation rejects claims that break this rule.
+
+Other `stevedores.org` records are owned by `infra-code-micro` (`crossplane/cloudflare/hub/infra/base/dns/stevedores.org/`). This repo's Crossplane manages only the `osc` and `osc-pr-*` names.
 
 ### Crossplane (planned)
 

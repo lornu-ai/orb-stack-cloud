@@ -76,10 +76,10 @@ spec:
                           default: false
                         zone:
                           type: string
-                          description: Cloudflare zone name (e.g. example.com)
+                          description: Cloudflare zone name (e.g. stevedores.org)
                         publicHost:
                           type: string
-                          description: FQDN for Tunnel + Access (e.g. app.dev.example.com)
+                          description: FQDN for Tunnel + Access, one label below the zone (e.g. osc.stevedores.org)
                         accessRequired:
                           type: boolean
                           default: true

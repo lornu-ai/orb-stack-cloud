@@ -18,8 +18,7 @@ services:
       SERVICES: s3,sqs
       DEBUG: "0"
     labels:
-      - dev.orbstack.domains=s3.aws.orb.local
-      - dev.orbstack.domains=sqs.aws.orb.local
+      - dev.orbstack.domains=s3.aws.orb.local,sqs.aws.orb.local
     ports:
       - "4566:4566"
     networks:

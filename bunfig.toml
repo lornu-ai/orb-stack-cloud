@@ -1,0 +1,4 @@
+[test]
+root = "tests"
+coverageThreshold = { lines = 0.7, functions = 0.7 }
+coverageSkipTestFiles = true

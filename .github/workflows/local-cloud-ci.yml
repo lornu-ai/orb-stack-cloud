@@ -1,0 +1,199 @@
+# Issue #6 test architecture / issue #7 execution plan. See docs/TESTING.md.
+# Repo variables gate the jobs that need infrastructure this repo does not create:
+#   ORB_MAC_RUNNER=true         a self-hosted Apple Silicon runner with OrbStack is registered
+#   CLOUD_PARITY_ENABLED=true   the AWS OIDC role, GCP WIF provider, and BigQuery dataset exist
+name: OrbStack Personal Cloud — CI & Multi-Cloud Parity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: local-cloud-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ORB_RESULTS_DIR: results
+
+jobs:
+  tier1:
+    name: "Tier 1: static validation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run test:coverage
+      - run: bun run verify:tier1
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: results-tier1
+          path: results/
+          if-no-files-found: ignore
+
+  apple-silicon:
+    name: "Tiers 2, 3 (local path), 5: Apple Silicon"
+    needs: tier1
+    if: vars.ORB_MAC_RUNNER == 'true'
+    runs-on: [self-hosted, macos, ARM64, aws-mac2-metal]
+    timeout-minutes: 60
+    env:
+      # Dedicated runner only: the Rosetta gate may restart the OrbStack engine.
+      ORB_NFR_ALLOW_ENGINE_RESTART: "1"
+      ORB_SSH_PUBKEY: ${{ vars.ORB_CI_SSH_PUBKEY }}
+      TS_AUTHKEY: ${{ secrets.TS_EPHEMERAL_AUTHKEY }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - run: bun run cleanup
+      - name: "Tier 2: hypervisor NFR gates"
+        run: bun run verify:engine --strict
+      - name: "Tier 5: isolation"
+        if: always()
+        run: bun run verify:isolation --strict
+      - name: Deploy reference local cloud
+        if: always()
+        run: |
+          kubectl --context orbstack apply -k blueprint/tier1
+          docker compose -f blueprint/tier2/docker-compose.yml up -d --wait
+          bun run --cwd tools/bootstrap-tier3 bootstrap
+          kubectl --context orbstack -n local-cloud wait --for=condition=Available deployment --all --timeout=180s
+      - name: "Tier 3: path A (.orb.local, strict TLS)"
+        if: always()
+        run: bun run verify:local-mesh --strict
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: results-apple-silicon
+          path: results/
+          if-no-files-found: ignore
+      - name: Tear down
+        if: always()
+        run: |
+          kubectl --context orbstack delete -k blueprint/tier1 --ignore-not-found --wait=false
+          docker compose -f blueprint/tier2/docker-compose.yml down --volumes
+          orb delete -f postgres vault || true
+          bun run cleanup
+
+  edge-and-mesh-probe:
+    name: "Tier 3: paths B (Tailscale) and C (Cloudflare Access)"
+    needs: apple-silicon
+    if: vars.ORB_MAC_RUNNER == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - uses: tailscale/github-action@6cae46e2d796f265265cfcf628b72a32b4d7cade # v3.3.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci-probe
+      - run: bun run verify:remote-probe --strict
+        env:
+          ORB_RUN_ID: ${{ github.run_id }}
+          TS_TAILNET: ${{ vars.TS_TAILNET }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: results-edge
+          path: results/
+          if-no-files-found: ignore
+
+  cloud-parity:
+    name: "Tier 4: AWS and GCP parity"
+    needs: tier1
+    if: vars.CLOUD_PARITY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    services:
+      localstack:
+        image: localstack/localstack:3
+        ports: ["4566:4566"]
+        env:
+          SERVICES: s3,sqs
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_SANDBOX_ACCOUNT_ID }}:role/GHA-OrbStack-Parity-Role
+          aws-region: us-west-2
+      - id: gcp
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ci-parity-sa@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          token_format: access_token
+      - run: bun run verify:aws-parity --strict
+        env:
+          LOCALSTACK_ENDPOINT: http://localhost:4566
+      - run: bun run verify:gce
+        if: always()
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_ACCESS_TOKEN: ${{ steps.gcp.outputs.access_token }}
+          ORB_SSH_PUBKEY: ${{ vars.ORB_CI_SSH_PUBKEY }}
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: results-cloud-parity
+          path: results/
+          if-no-files-found: ignore
+
+  telemetry:
+    name: "Tier 5: NFR telemetry to BigQuery"
+    needs: [apple-silicon, cloud-parity]
+    if: always() && vars.CLOUD_PARITY_ENABLED == 'true' && needs.apple-silicon.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: results-*
+          path: results
+          merge-multiple: true
+      - id: gcp
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ci-parity-sa@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+          token_format: access_token
+      - run: bun run report:bigquery
+        env:
+          GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+          GCP_ACCESS_TOKEN: ${{ steps.gcp.outputs.access_token }}

@@ -32,6 +32,15 @@ Claims: [examples/](examples/README.md). Validation: [docs/VALIDATION.md](docs/V
 
 ## Docs
 
-- [docs/PLANNING.md](docs/PLANNING.md) · [docs/IAC.md](docs/IAC.md) · [docs/DOD.md](docs/DOD.md) · [docs/EDGE-NETWORK.md](docs/EDGE-NETWORK.md)
+- [docs/PLANNING.md](docs/PLANNING.md) · [docs/IAC.md](docs/IAC.md) · [docs/DOD.md](docs/DOD.md) · [docs/EDGE-NETWORK.md](docs/EDGE-NETWORK.md) · [docs/TESTING.md](docs/TESTING.md)
+
+## Tests
+
+```bash
+bun install
+bun run test:coverage     # unit tests, 70% threshold
+bun run verify:tier1      # static validation (no cluster needed)
+bun run verify:engine     # Apple Silicon NFR gates (creates and removes ci-osc-* machines)
+```
 
 Governed by [code-governance](https://github.com/lornu-ai/code-governance) (`.code-governance.toml`).
