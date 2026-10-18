@@ -1,0 +1,10 @@
+# Override per Mac via kustomize patches in overlays/mac-{a,b,c}.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gap-fleet
+  namespace: gap
+data:
+  role: primary
+  mac_id: mac-a
+  fleet_size: "3"
