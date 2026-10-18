@@ -1,0 +1,12 @@
+apiVersion: cloud.orbstack.io/v1alpha1
+kind: LocalCloudStack
+metadata:
+  name: personal
+  namespace: default
+spec:
+  parameters:
+    namespace: local-cloud
+    enableTier3: true
+    enableTier1: true
+  compositionRef:
+    name: localcloudstack-epic7

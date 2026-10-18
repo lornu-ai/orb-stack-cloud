@@ -1,0 +1,48 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xorbstackmachines.cloud.orbstack.io
+spec:
+  group: cloud.orbstack.io
+  names:
+    kind: XOrbStackMachine
+    plural: xorbstackmachines
+  claimNames:
+    kind: OrbStackMachineClaim
+    plural: orbstackmachineclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required: [distro, hostname]
+                  properties:
+                    distro:
+                      type: string
+                    hostname:
+                      type: string
+                    cloudInitConfigMapRef:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        key:
+                          type: string
+                    isolated:
+                      type: boolean
+                    isolateNetwork:
+                      type: boolean
+              required: [parameters]
+            status:
+              type: object
+              properties:
+                orbDomain:
+                  type: string
