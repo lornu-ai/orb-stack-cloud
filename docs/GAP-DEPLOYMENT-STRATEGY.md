@@ -6,7 +6,7 @@ Gap is **not** a Mac/web-only control plane. Deployment must keep these first-cl
 
 1. **Native iOS client** — Dispatch / Issues / Agents / Gateway on iPhone ([LOR-568](https://linear.app/lornu-ai/issue/LOR-568)).
 2. **Interactive voice play** — a real CallKit / `AVAudioSession` play-and-record session: mic up, agent audio down, barge-in, over one authenticated `wss://` to the gateway ([LOR-548](https://linear.app/lornu-ai/issue/LOR-548), [LOR-569](https://linear.app/lornu-ai/issue/LOR-569), [LOR-570](https://linear.app/lornu-ai/issue/LOR-570)).
-3. **Browser-native agents (WebMCP)** — Gap web registers typed in-tab tools via `document.modelContext`; ChromeOS + `chrome-devtools-mcp` is the QA/dev loop ([WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md), [LOR-594](https://linear.app/lornu-ai/issue/LOR-594)).
+3. **Browser-native agents (WebMCP)** — Gap web registers typed in-tab tools via `document.modelContext`; ChromeOS + `chrome-devtools-mcp` is the QA/dev loop ([WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md)).
 
 OrbStack + Cloudflare exist to make that remote voice path reliable. A hub that only serves local `kubectl` smoke tests is incomplete. ChromeOS WebMCP work does **not** replace iOS voice — it makes the web client agent-callable and testable.
 
@@ -56,7 +56,8 @@ GAP Web + WebMCP tools        ─┼── Cloudflare Access ── gap.airesear
 | P0 | Persistent storage | PVC/hostPath for SQLite/outbox (LOR-593) |
 | P0 | CI/CD | `lornu-ai/gap` image CI + this repo kustomize-validate |
 | P1 | **iOS interactive voice play** | LOR-548 epic: LOR-568 shell, LOR-569 session, LOR-570 barge-in — needs deployed authenticated gateway |
-| P1 | **WebMCP + ChromeOS agents** | LOR-594 — Gap web tools + chrome-devtools-mcp dual loop (`blueprint/webmcp-chromeos/`) |
+| P1 | **WebMCP + ChromeOS agents** | Gap web tools + chrome-devtools-mcp dual loop (`blueprint/webmcp-chromeos/`) |
+| P1 | **iPaaS Host (oxidizedgraph + axum + Bun UDS)** | LOR-597 — wraps WebMCP; Execution/Control/Bun planes (`blueprint/ipaas-host/`) |
 | P1 | Agent delegation | Gap agent workforce epic (incl. voice-to-delegate LOR-561) |
 | P1 | Monitoring | Health checks / alerts |
 
@@ -81,4 +82,4 @@ curl -fsS http://gap.k8s.orb.local:8080/healthz
 
 Voice acceptance (after LOR-545 / LOR-571): iPhone holds a CallKit session to the Lead Agent with duplex audio — not only `/healthz`.
 
-See [GAP-ON-ORBSTACK.md](GAP-ON-ORBSTACK.md) and [WEBMCP-CHROMEOS-AGENTS.md](WEBMCP-CHROMEOS-AGENTS.md).
+See [GAP-ON-ORBSTACK.md](GAP-ON-ORBSTACK.md).
