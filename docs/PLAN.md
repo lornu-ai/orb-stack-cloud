@@ -2,7 +2,7 @@
 
 The **authoritative program backlog** (Crossplane, Tailscale, Cloudflare — no Terraform) is
 **[EXECUTION_PLAN.md](./EXECUTION_PLAN.md)**, mirrored from
-[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5).
+[issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5).
 
 | Document | Purpose |
 | --- | --- |
@@ -15,9 +15,9 @@ The **authoritative program backlog** (Crossplane, Tailscale, Cloudflare — no 
 
 ## Issue lineage
 
-- **[#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)** — Platform engine + local cloud architecture narrative.
-- **[#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2)** — Original Agile epics (Terraform/OpenTofu in Track B).
-- **[#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** — **Supersedes #2 for IaC and ingress** (Crossplane + Tailscale + Cloudflare).
+- **[#1](https://github.com/stevedores-org/orb-stack-cloud/issues/1)** — Platform engine + local cloud architecture narrative.
+- **[#2](https://github.com/stevedores-org/orb-stack-cloud/issues/2)** — Original Agile epics (Terraform/OpenTofu in Track B).
+- **[#5](https://github.com/stevedores-org/orb-stack-cloud/issues/5)** — **Supersedes #2 for IaC and ingress** (Crossplane + Tailscale + Cloudflare).
 
 Track A (Epics 1–6) is OrbStack product work. Track B (Epic 7) is implemented declaratively in this repository.
 

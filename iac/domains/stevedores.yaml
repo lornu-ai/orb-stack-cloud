@@ -1,5 +1,5 @@
 # Canonical production edge for OSC (Google Stitch UI + Crossplane claims).
-# Repo: https://github.com/lornu-ai/orb-stack-cloud
+# Repo: https://github.com/stevedores-org/orb-stack-cloud
 apiVersion: v1
 kind: ConfigMap
 metadata:

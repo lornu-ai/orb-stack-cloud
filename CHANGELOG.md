@@ -1,9 +1,9 @@
 # Changelog
 
-All notable changes to [lornu-ai/orb-stack-cloud](https://github.com/lornu-ai/orb-stack-cloud) are tracked here.
-Program backlog: [issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5). CI/testing: [issues #6–#7](https://github.com/lornu-ai/orb-stack-cloud/issues/6).
+All notable changes to [stevedores-org/orb-stack-cloud](https://github.com/stevedores-org/orb-stack-cloud) are tracked here.
+Program backlog: [issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5). CI/testing: [issues #6–#7](https://github.com/stevedores-org/orb-stack-cloud/issues/6).
 
-## [Unreleased] — branch `feat/crossplane-epic7` ([PR #3](https://github.com/lornu-ai/orb-stack-cloud/pull/3))
+## [Unreleased] — branch `feat/crossplane-epic7` ([PR #3](https://github.com/stevedores-org/orb-stack-cloud/pull/3))
 
 ### Added
 - **Google Stitch UI** — `web/` React control plane (`osc.k8s.orb.local` / **`osc.stevedores.org`**).
@@ -18,11 +18,16 @@ Program backlog: [issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5
 - Examples: `tier3-stateful-claims.yaml`, provider install stubs (helm, cloudflare, upjet-aws).
 
 ### Changed
-- IaC direction: **Crossplane + Tailscale + Cloudflare** replaces Terraform/OpenTofu ([issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) supersedes #2 Track B IaC).
+- IaC direction: **Crossplane + Tailscale + Cloudflare** replaces Terraform/OpenTofu ([issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) supersedes #2 Track B IaC).
 - AWS CI uses **`aws --profile lornu-ai`** for all CLI smoke tests.
 
 ### Not yet (see [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md))
 - `XEventBus`, `XCloudflareEdgeIngress`, Tailscale Operator manifests, tri-path E2E, mac2 metal self-hosted runners (#6–#7).
+
+## [0.1.0] — 2026-10-18
+
+### Changed
+- Repository canonical URL: **stevedores-org/orb-stack-cloud** (migrated from `lornu-ai/orb-stack-cloud`).
 
 ## [0.0.0] — 2026-10-18
 

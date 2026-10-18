@@ -4,8 +4,8 @@
 
 | Source | Document |
 | --- | --- |
-| [Issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) Epic 7 | [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) |
-| [Issues #6–#7](https://github.com/lornu-ai/orb-stack-cloud/issues/6) CI/testing | [CI.md](./CI.md) |
+| [Issue #5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) Epic 7 | [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) |
+| [Issues #6–#7](https://github.com/stevedores-org/orb-stack-cloud/issues/6) CI/testing | [CI.md](./CI.md) |
 
 ## Name mapping (plan → repo)
 
@@ -45,4 +45,4 @@
 | Tri-path ingress | Not started |
 | Track A hardware NFRs | OrbStack product / #6 Tier 2 |
 
-*Last updated: 2026-10-18 — PR [#3](https://github.com/lornu-ai/orb-stack-cloud/pull/3) @ `feat/crossplane-epic7`.*
+*Last updated: 2026-10-18 — PR [#3](https://github.com/stevedores-org/orb-stack-cloud/pull/3) @ `feat/crossplane-epic7`.*

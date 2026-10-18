@@ -2,8 +2,8 @@
 
 | Document | Role |
 | --- | --- |
-| [#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) | Full platform + workload architecture narrative |
-| [#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) / [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) | **Revised backlog** — Crossplane, Tailscale, Cloudflare (replaces Terraform in #2) |
+| [#1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) | Full platform + workload architecture narrative |
+| [#5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) / [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) | **Revised backlog** — Crossplane, Tailscale, Cloudflare (replaces Terraform in #2) |
 
 ## Two dimensions
 

@@ -1,26 +1,26 @@
 # Project tracker — orb-stack-cloud
 
 Central index for **architecture**, **delivery**, **CI**, and **open work** on
-[github.com/lornu-ai/orb-stack-cloud](https://github.com/lornu-ai/orb-stack-cloud).
+[github.com/stevedores-org/orb-stack-cloud](https://github.com/stevedores-org/orb-stack-cloud).
 
 ## Active pull request
 
 | PR | Branch | Scope |
 | --- | --- | --- |
-| [#3](https://github.com/lornu-ai/orb-stack-cloud/pull/3) | `feat/crossplane-epic7` | Epic 7 Crossplane stack + docs + GHA CI |
+| [#3](https://github.com/stevedores-org/orb-stack-cloud/pull/3) | `feat/crossplane-epic7` | Epic 7 Crossplane stack + docs + GHA CI |
 
-> [#4](https://github.com/lornu-ai/orb-stack-cloud/pull/4) is a parallel blueprint branch — consolidate into #3 before merge.
+> [#4](https://github.com/stevedores-org/orb-stack-cloud/pull/4) is a parallel blueprint branch — consolidate into #3 before merge.
 
 ## GitHub issues map
 
 | Issue | Role | Repo artifacts |
 | --- | --- | --- |
-| [#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) | Solution architecture (OrbStack engine) | [ARCHITECTURE.md](./ARCHITECTURE.md) (summary) |
-| [#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) | Original epics (Terraform era) | Superseded for IaC by **#5** |
-| [#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) | **Canonical execution plan** (Crossplane, TS, CF) | [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) |
-| [#6](https://github.com/lornu-ai/orb-stack-cloud/issues/6) | Testing & verification architecture | [CI.md](./CI.md) (Tier 1 partial) |
-| [#7](https://github.com/lornu-ai/orb-stack-cloud/issues/7) | Multi-cloud CI/CD build-out epics | GHA workflow; T1–T6 mostly planned |
-| [#8](https://github.com/lornu-ai/orb-stack-cloud/issues/8) | Google Stitch init | [`web/`](../web/) · **`osc.stevedores.org`** in [`iac/`](../iac/) |
+| [#1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) | Solution architecture (OrbStack engine) | [ARCHITECTURE.md](./ARCHITECTURE.md) (summary) |
+| [#2](https://github.com/stevedores-org/orb-stack-cloud/issues/2) | Original epics (Terraform era) | Superseded for IaC by **#5** |
+| [#5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) | **Canonical execution plan** (Crossplane, TS, CF) | [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) |
+| [#6](https://github.com/stevedores-org/orb-stack-cloud/issues/6) | Testing & verification architecture | [CI.md](./CI.md) (Tier 1 partial) |
+| [#7](https://github.com/stevedores-org/orb-stack-cloud/issues/7) | Multi-cloud CI/CD build-out epics | GHA workflow; T1–T6 mostly planned |
+| [#8](https://github.com/stevedores-org/orb-stack-cloud/issues/8) | Google Stitch init | [`web/`](../web/) · **`osc.stevedores.org`** in [`iac/`](../iac/) |
 
 ## Delivery status (Epic 7 — issue #5)
 

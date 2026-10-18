@@ -2,9 +2,9 @@
 
 | Link | Issue |
 | --- | --- |
-| Solution architecture | [#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) |
-| Original epics (Terraform era) | [#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) |
-| **This document (canonical)** | [#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) |
+| Solution architecture | [#1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) |
+| Original epics (Terraform era) | [#2](https://github.com/stevedores-org/orb-stack-cloud/issues/2) |
+| **This document (canonical)** | [#5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) |
 
 **Repository tracker:** [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) · **Operator guides:** [CROSSPLANE.md](./CROSSPLANE.md) · [TAILSCALE.md](./TAILSCALE.md) · [CLOUDFLARE.md](./CLOUDFLARE.md)
 

@@ -1,6 +1,6 @@
 # IaC — orb-stack-cloud
 
-Infrastructure-as-code for [lornu-ai/orb-stack-cloud](https://github.com/lornu-ai/orb-stack-cloud) lives in this repo (Crossplane + Kustomize + edge claims). **No Terraform.**
+Infrastructure-as-code for [stevedores-org/orb-stack-cloud](https://github.com/stevedores-org/orb-stack-cloud) lives in this repo (Crossplane + Kustomize + edge claims). **No Terraform.**
 
 ## Production edge — `osc.stevedores.org`
 

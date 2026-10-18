@@ -1,5 +1,7 @@
 # orb-stack-cloud
 
+**Home:** [stevedores-org/orb-stack-cloud](https://github.com/stevedores-org/orb-stack-cloud) · [docs/REPOSITORY.md](docs/REPOSITORY.md)
+
 Reference **OrbStack “personal cloud”** using **Crossplane** (IaC), **Tailscale** (tailnet),
 and **Cloudflare** (Tunnels / Zero Trust / DNS) — **not Terraform/OpenTofu**.
 
@@ -7,9 +9,9 @@ and **Cloudflare** (Tunnels / Zero Trust / DNS) — **not Terraform/OpenTofu**.
 
 | Item | Link |
 | --- | --- |
-| Solution architecture | [#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) |
-| Original epics (superseded for IaC) | [#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) |
-| **Revised execution plan (canonical)** | [#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5) → [docs/EXECUTION_PLAN.md](docs/EXECUTION_PLAN.md) |
+| Solution architecture | [#1](https://github.com/stevedores-org/orb-stack-cloud/issues/1) |
+| Original epics (superseded for IaC) | [#2](https://github.com/stevedores-org/orb-stack-cloud/issues/2) |
+| **Revised execution plan (canonical)** | [#5](https://github.com/stevedores-org/orb-stack-cloud/issues/5) → [docs/EXECUTION_PLAN.md](docs/EXECUTION_PLAN.md) |
 | Implementation status | [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md) |
 | Project tracker & changelog | [docs/PROJECT_TRACKER.md](docs/PROJECT_TRACKER.md) · [CHANGELOG.md](CHANGELOG.md) |
 | Testing / CI (#6–#7) | [docs/CI.md](docs/CI.md) |
