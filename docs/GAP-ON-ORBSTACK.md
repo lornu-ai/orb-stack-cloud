@@ -2,12 +2,18 @@
 
 **Decision:** Gap’s personal-cloud runtime (gap-hub) deploys on OrbStack on our Macs. Overlay: [`blueprint/gap/`](../blueprint/gap/). Epic: Linear **LOR-591**.
 
+## Product requirement
+
+Gap must work on **native iOS** with **interactive voice play** (CallKit / full-duplex session to the Lead Agent). OrbStack is the hub that makes that session reach agents. See [GAP-DEPLOYMENT-STRATEGY.md](GAP-DEPLOYMENT-STRATEGY.md) and Linear **LOR-548** / **LOR-569**.
+
+`/healthz` alone is not done — remote iOS voice over authenticated `wss://` is the success path (after **LOR-545** / **LOR-571**).
+
 ## Why here (not GKE-first)
 
 - Apple Silicon OrbStack is the daily personal cloud (this repo).
-- Gap clients (web / iOS / macOS) talk to a nearby hub with low latency.
+- Gap clients (web / **iOS** / macOS) talk to a nearby hub with low latency for voice.
 - Cloudflare Workers (`gap.airesearches.app`) remain the **public** web + MCP edge (LOR-578).
-- GKE manifests in `infra-code-gke-inert` stay optional / later; Macs are the Release 0 sync plane.
+- GKE manifests in `infra-code-gke-inert` stay optional / later; Macs are the Release 0 sync + voice plane.
 
 ## Fleet topology
 
@@ -15,7 +21,7 @@
         ┌─────────────────────────────────────────┐
         │ Tailscale tailnet (private)             │
         │                                         │
-  Mac A │  OrbStack K8s ── gap-hub (primary)      │◄── iOS / web clients
+  Mac A │  OrbStack K8s ── gap-hub (primary)      │◄── iOS voice / web clients
   (hub) │  gap.k8s.orb.local:8080                 │
         │                                         │
   Mac B │  OrbStack K8s ── gap-hub (satellite)    │── Tailscale → Mac A
@@ -38,6 +44,7 @@ Rename `mac-a/b/c` to real hostnames in a private follow-up if needed; keep over
 |-----------|------|--------|
 | Same Mac UI → hub | `http://gap.k8s.orb.local:8080` | OrbStack local DNS |
 | Other Mac → primary | Tailscale Serve / operator hostname | See [EDGE-NETWORK.md](EDGE-NETWORK.md) |
+| iOS → hub voice/WS | Tailscale now; Tunnel after LOR-545 | Full-duplex audio session (LOR-569) |
 | Internet → hub `/ws` | **Denied** until LOR-545 | No Cloudflare Tunnel for Gap WS yet |
 | Internet → web/MCP | `gap.airesearches.app` | Cloudflare Access (LOR-578) |
 
@@ -49,6 +56,7 @@ Rename `mac-a/b/c` to real hostnames in a private follow-up if needed; keep over
 4. `kubectl apply -k blueprint/gap/overlays/mac-<a|b|c>`.
 5. `curl -fsS http://gap.k8s.orb.local:8080/healthz`.
 6. On satellites: verify Tailscale path to Mac A hub (document hostname in the Mac’s private notes).
+7. Keep **Mac A** awake for remote iOS voice; satellites may sleep.
 
 ## Relation to Epic 7 blueprint
 
@@ -63,4 +71,4 @@ kubectl apply -k blueprint/gap/overlays/mac-a
 
 - Non-root UID `65532` (matches gap-hub image).
 - No Linear/Slack tokens in these manifests — clients keep secrets on device (LOR-546 Keychain).
-- Public Tunnel for Gap sync waits on LOR-545.
+- Public Tunnel for Gap sync / voice waits on LOR-545 (+ LOR-571 for voice sessions).
