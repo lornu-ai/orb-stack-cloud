@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: localstack-aws
+  labels:
+    app: localstack-aws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localstack-aws
+  template:
+    metadata:
+      labels:
+        app: localstack-aws
+    spec:
+      containers:
+        - name: localstack
+          image: localstack/localstack:3
+          env:
+            - name: SERVICES
+              value: s3,sqs
+          ports:
+            - containerPort: 4566

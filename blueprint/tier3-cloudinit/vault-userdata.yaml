@@ -1,0 +1,38 @@
+#cloud-config
+hostname: vault
+fqdn: vault.orb.local
+manage_etc_hosts: true
+
+users:
+  - name: vault
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ORB_SSH_PUBKEY}
+
+package_update: true
+
+write_files:
+  - path: /etc/apt/sources.list.d/hashicorp.list
+    content: |
+      deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com bookworm main
+  - path: /etc/vault.d/vault.hcl
+    content: |
+      ui = true
+      disable_mlock = true
+      storage "file" { path = "/var/lib/vault/data" }
+      listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_disable = 1
+      }
+      api_addr = "http://vault.orb.local:8200"
+
+runcmd:
+  - wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  - apt-get update
+  - apt-get install -y vault
+  - mkdir -p /var/lib/vault/data
+  - chown -R vault:vault /var/lib/vault
+  - systemctl enable --now vault
+
+final_message: "vault.orb.local tier3 cloud-init complete"

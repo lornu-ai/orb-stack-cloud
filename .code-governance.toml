@@ -1,0 +1,12 @@
+[governance]
+source = "https://github.com/lornu-ai/code-governance"
+ref = "main"
+
+[adoption]
+standards = [
+  "github-repository-baseline",
+  "ci-enforcement-baseline",
+]
+
+[references]
+readme_blurb = "Governed by [lornu-ai/code-governance](https://github.com/lornu-ai/code-governance)."

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: localstack-aws
+spec:
+  selector:
+    app: localstack-aws
+  ports:
+    - port: 4566
+      targetPort: 4566
