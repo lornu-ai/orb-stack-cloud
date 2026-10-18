@@ -24,6 +24,10 @@ jobs:
         run: |
           kustomize build blueprint/tier1
           kustomize build blueprint/tier2/k8s
+          kustomize build blueprint/gap/base
+          kustomize build blueprint/gap/overlays/mac-a
+          kustomize build blueprint/gap/overlays/mac-b
+          kustomize build blueprint/gap/overlays/mac-c
           kustomize build crossplane/local-cloud
           kustomize build crossplane/providers
           kustomize build crossplane/providerconfig
