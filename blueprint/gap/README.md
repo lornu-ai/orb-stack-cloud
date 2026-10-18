@@ -2,7 +2,9 @@
 
 Deploys **gap-hub** from [`lornu-ai/gap`](https://github.com/lornu-ai/gap) into the OrbStack Kubernetes cluster on each Mac.
 
-See [docs/GAP-ON-ORBSTACK.md](../../docs/GAP-ON-ORBSTACK.md) for the three-Mac fleet.
+See [docs/GAP-ON-ORBSTACK.md](../../docs/GAP-ON-ORBSTACK.md) for the three-Mac fleet and [docs/GAP-DEPLOYMENT-STRATEGY.md](../../docs/GAP-DEPLOYMENT-STRATEGY.md) for product constraints.
+
+**Success includes native iOS + interactive voice play** (LOR-548 / LOR-569): authenticated full-duplex `wss://` to this hub — not only `/healthz`.
 
 ## Apply (per Mac)
 
@@ -36,4 +38,4 @@ Pin a **digest** from gap CI (LOR-550) before treating the hub as durable.
 
 ## Public edge
 
-Do **not** expose `/ws` or `/sync` on Cloudflare until Gap LOR-545 (WS auth) is done. Local `*.k8s.orb.local` and Tailscale only.
+Do **not** expose `/ws` or `/sync` on Cloudflare until Gap LOR-545 (WS auth) is done. Local `*.k8s.orb.local` and Tailscale only. Voice sessions also need LOR-571.
