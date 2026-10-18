@@ -1,18 +1,27 @@
-//! WorkflowBlueprint → oxidizedgraph compiler types (locked architecture).
+//! WorkflowBlueprint → oxidizedgraph compiler.
 //!
-//! Phase 1 binds these nodes to `oxidizedgraph::NodeExecutor` implementations.
-//! Do not introduce a parallel petgraph runtime here.
+//! The XYFlow canvas saves a [`WorkflowBlueprint`]. [`compile`] binds each node to an
+//! `oxidizedgraph` `NodeExecutor` from a [`NodeRegistry`] and returns a `CompiledGraph`
+//! that oxidizedgraph's `GraphRunner` executes. Do not introduce a parallel petgraph runtime here.
 
-use async_trait::async_trait;
+pub mod compile;
+pub mod nodes;
+
+pub use compile::{
+    compile, validate_blueprint, CompileError, CompiledNode, NodeFactory, NodeRegistry,
+};
+
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
 use uuid::Uuid;
 
 /// Declarative JSON emitted by the XYFlow frontend.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkflowBlueprint {
     pub workflow_id: Uuid,
+    /// Node the run starts at. When absent, the one node with no incoming edge.
+    #[serde(default)]
+    pub entry: Option<String>,
     pub nodes: Vec<BlueprintNode>,
     pub edges: Vec<BlueprintEdge>,
 }
@@ -21,13 +30,15 @@ pub struct WorkflowBlueprint {
 pub struct BlueprintNode {
     pub id: String,
     pub runtime: RuntimeTarget,
-    /// e.g. `core.http_request`, `bun.slack.postMessage`, `bun.code`
+    /// e.g. `core.http_request`, `core.switch`, `bun.slack.postMessage`
     pub node_type: String,
+    #[serde(default)]
     pub parameters: Value,
+    #[serde(default)]
     pub credential_id: Option<Uuid>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RuntimeTarget {
     RustNative,
@@ -39,49 +50,11 @@ pub enum RuntimeTarget {
 pub struct BlueprintEdge {
     pub source: String,
     pub target: String,
-    /// Evaluated for cyclic loops / conditional routing
+    /// XYFlow `sourceHandle`: which output of a multi-output node (such as a Switch) this edge leaves from.
+    #[serde(default)]
+    pub source_handle: Option<String>,
+    /// Not supported: oxidizedgraph routes with Rust closures, not expression strings.
+    /// Branch with a `core.switch` node and `source_handle` instead.
+    #[serde(default)]
     pub condition_expr: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WorkflowEnvelope {
-    pub execution_id: Uuid,
-    /// node_id → JSON output
-    pub outputs: HashMap<String, Value>,
-    pub active_branch: Option<String>,
-}
-
-/// Unified executor wrapper for Rust native, Bun UDS, and MCP nodes.
-#[async_trait]
-pub trait WorkflowNodeExecutor: Send + Sync {
-    async fn execute(&self, state: &mut WorkflowEnvelope) -> anyhow::Result<Option<String>>;
-}
-
-/// Validate blueprint shape before compile (Phase 1 fleshes out oxidizedgraph binding).
-pub fn validate_blueprint(bp: &WorkflowBlueprint) -> anyhow::Result<()> {
-    if bp.nodes.is_empty() {
-        anyhow::bail!("blueprint has no nodes");
-    }
-    let ids: std::collections::HashSet<_> = bp.nodes.iter().map(|n| n.id.as_str()).collect();
-    for e in &bp.edges {
-        if !ids.contains(e.source.as_str()) || !ids.contains(e.target.as_str()) {
-            anyhow::bail!("edge references unknown node {} → {}", e.source, e.target);
-        }
-    }
-    Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn rejects_empty_blueprint() {
-        let bp = WorkflowBlueprint {
-            workflow_id: Uuid::nil(),
-            nodes: vec![],
-            edges: vec![],
-        };
-        assert!(validate_blueprint(&bp).is_err());
-    }
 }
