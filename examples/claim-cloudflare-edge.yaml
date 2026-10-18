@@ -7,8 +7,8 @@ metadata:
 spec:
   compositionRef:
     name: cloudflare-edge-ingress
-  zone: example.com
-  publicHost: app-dev.example.com
+  zone: stevedores.org
+  publicHost: osc.stevedores.org
   upstreamService: api-gateway.local-cloud.svc.cluster.local
   upstreamPort: 80
   accessRequired: true

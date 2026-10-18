@@ -4,6 +4,7 @@ Reference **Personal Cloud** blueprint for [OrbStack](https://orbstack.dev) on A
 
 | Doc | Link |
 |-----|------|
+| **Public hub** | **https://osc.stevedores.org** ([IaC](docs/PUBLIC-SITE.md)) |
 | Solution architecture | [Issue #1](https://github.com/lornu-ai/orb-stack-cloud/issues/1) |
 | **Execution plan (Crossplane · Tailscale · Cloudflare)** | **[Issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** |
 | Repo implementation map | [docs/EXECUTION-PLAN.md](docs/EXECUTION-PLAN.md) |
