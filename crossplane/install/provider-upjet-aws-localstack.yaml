@@ -1,0 +1,12 @@
+# Story 7.1 / 7.3 — provider-upjet-aws pointed at LocalStack (tier2 compose).
+# After install, create ProviderConfig with:
+#   endpoint: http://s3.aws.orb.local:4566 (and sqs)
+#   skip_credentials_validation: true, s3_use_path_style: true
+#
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-aws
+# spec:
+#   package: xpkg.upbound.io/upbound/provider-aws-s3:v1.11.0
+# (Add SQS provider package or monolithic provider-aws per Upbound docs.)

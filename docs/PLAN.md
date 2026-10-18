@@ -1,38 +1,35 @@
-# Execution plan (Crossplane track)
+# Execution plan index
 
-Maps [issue #2](https://github.com/lornu-ai/orb-stack-cloud/issues/2) to this repository.
-**Track A** (Epics 1–6) is OrbStack product engineering — architecture only in
-[ARCHITECTURE.md](./ARCHITECTURE.md). **Track B Epic 7** is implemented here with
-Crossplane.
+The **authoritative program backlog** (Crossplane, Tailscale, Cloudflare — no Terraform) is
+**[EXECUTION_PLAN.md](./EXECUTION_PLAN.md)**, mirrored from
+[issue #5](https://github.com/lornu-ai/orb-stack-cloud/issues/5).
 
-## Phase 1 — Crossplane foundation (this repo)
-
-| Story | Deliverable | Status |
-| --- | --- | --- |
-| 7.1 Tier 3 Postgres/Vault | `XOrbStackMachine` + cloud-init templates + controller | In repo |
-| 7.2 Tier 2 Compose | `tier2/docker-compose.yml` + Crossplane ConfigMap composition | In repo |
-| 7.3 Tier 1 K8s | `tier1/` manifests + `XLocalCloudStack` composition | In repo |
-
-## Phase 2 — Hardening (follow-ups)
-
-- Crossplane **Provider** for OrbStack API (replace host `orbstack-controller`).
-- Epic 6 isolation: `--isolated` flags on `OrbStackMachine` spec.
-- Automated E2E: `https://app.k8s.orb.local/api/v1/checkout` (issue #2 AC).
-
-## Personas → owners
-
-| Persona | Focus in this repo |
+| Document | Purpose |
 | --- | --- |
-| `@CloudArch` | XRD/Composition design, cloud-init, claims |
-| `@AppDev` | Tier 1/2 app manifests, compose labels |
-| `@RuntimeEng` | `orbstack-controller` reconciler |
-| `@NetEng` | `.orb.local` DNS assumptions (OrbStack platform) |
+| [EXECUTION_PLAN.md](./EXECUTION_PLAN.md) | Full revised epics, stories, roadmap, NFR gates |
+| [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) | What exists in *this repo* vs Epic 7.1–7.4 |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Short topology summary + links |
+| [CROSSPLANE.md](./CROSSPLANE.md) | Install Crossplane and provider matrix |
+| [TAILSCALE.md](./TAILSCALE.md) | Tailnet + Operator plan (Story 7.4) |
+| [CLOUDFLARE.md](./CLOUDFLARE.md) | Zero Trust Tunnel / DNS plan (Story 7.4) |
 
-## NFR gates (Epic 7 E2E)
+## Issue lineage
 
-When the full stack is up, verify:
+- **[#1](https://github.com/lornu-ai/orb-stack-cloud/issues/1)** — Platform engine + local cloud architecture narrative.
+- **[#2](https://github.com/lornu-ai/orb-stack-cloud/issues/2)** — Original Agile epics (Terraform/OpenTofu in Track B).
+- **[#5](https://github.com/lornu-ai/orb-stack-cloud/issues/5)** — **Supersedes #2 for IaC and ingress** (Crossplane + Tailscale + Cloudflare).
 
-- `postgres.orb.local:5432` accepts connections after cloud-init.
-- `https://vault.orb.local:8200` (or HTTP dev mode) responds.
-- `https://billing.internal.orb.local/health` and LocalStack health URLs return 200.
-- `https://app.k8s.orb.local` routes through Tier 1 Ingress (manual until AC automated).
+Track A (Epics 1–6) is OrbStack product work. Track B (Epic 7) is implemented declaratively in this repository.
+
+## Phase 4 delivery focus (repo)
+
+From issue #5 §5, Phase 4 stories map to repository work:
+
+| Story | Focus |
+| --- | --- |
+| 7.1 | Providers: kubernetes, helm, upjet-aws→LocalStack, cloudflare; XRDs |
+| 7.2 | Tier 3 cloud-init + Tailscale enrollment on machines |
+| 7.3 | `tier2/docker-compose.yml` + `XEventBus` Composition |
+| 7.4 | `tier1/` + Tailscale Operator + `XCloudflareEdgeIngress` + tri-path E2E |
+
+See [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) for current completion.
