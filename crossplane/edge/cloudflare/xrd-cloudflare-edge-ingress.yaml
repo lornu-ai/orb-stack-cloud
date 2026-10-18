@@ -1,0 +1,41 @@
+# Story 7.4 — planning XRD.
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xcloudflareedgeingresses.edge.cloud.orb.local
+  labels:
+    orbstack.lornu.ai/status: planning
+spec:
+  group: edge.cloud.orb.local
+  names:
+    kind: XCloudflareEdgeIngress
+    plural: xcloudflareedgeingresses
+  claimNames:
+    kind: CloudflareEdgeIngressClaim
+    plural: cloudflareedgeingressclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                zone:
+                  type: string
+                publicHost:
+                  type: string
+                upstreamService:
+                  type: string
+                  default: api-gateway.local-cloud.svc.cluster.local
+                upstreamPort:
+                  type: integer
+                  default: 80
+                accessRequired:
+                  type: boolean
+                  default: true
+              required: [zone, publicHost]
+          required: [spec]

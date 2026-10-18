@@ -1,0 +1,37 @@
+# Story 7.3 — planning XRD for LocalStack S3 + SQS.
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xeventbuses.localstack.cloud.orb.local
+  labels:
+    orbstack.lornu.ai/status: planning
+spec:
+  group: localstack.cloud.orb.local
+  names:
+    kind: XEventBus
+    plural: xeventbuses
+  claimNames:
+    kind: EventBusClaim
+    plural: eventbusclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                bucketName:
+                  type: string
+                  default: invoices-archive
+                queueName:
+                  type: string
+                  default: billing-events
+                region:
+                  type: string
+                  default: us-east-1
+              required: [bucketName, queueName]
+          required: [spec]

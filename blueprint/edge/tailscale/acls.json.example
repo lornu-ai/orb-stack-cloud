@@ -1,0 +1,19 @@
+{
+  "comment": "Example tailnet ACL — apply via Tailscale admin or future Crossplane composition. Deny public ingress to Tier 3 ports.",
+  "acls": [
+    {
+      "action": "accept",
+      "src": ["group:devs"],
+      "dst": ["tag:orbstack-k8s:*", "tag:orbstack-mac:*"]
+    },
+    {
+      "action": "accept",
+      "src": ["tag:orbstack-k8s"],
+      "dst": ["tag:orbstack-mac:5432", "tag:orbstack-mac:8200"]
+    }
+  ],
+  "tagOwners": {
+    "tag:orbstack-k8s": ["group:devs"],
+    "tag:orbstack-mac": ["group:devs"]
+  }
+}

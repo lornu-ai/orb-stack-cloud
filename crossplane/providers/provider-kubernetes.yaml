@@ -1,0 +1,9 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-kubernetes
+  labels:
+    lornu.ai/managed-by: crossplane
+    lornu.ai/cluster: orbstack-local
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.15.0

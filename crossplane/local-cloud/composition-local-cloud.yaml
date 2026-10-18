@@ -1,0 +1,259 @@
+# Replaces Terraform/OpenTofu wrapper for Story 7.1: claim drives in-cluster
+# Tier 1 (provider-kubernetes Object) and Tier 3 cloud-init bundle (ConfigMap).
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: reference-local-cloud
+  labels:
+    lornu.ai/managed-by: crossplane
+    orbstack.lornu.ai/blueprint: reference-local-cloud
+spec:
+  compositeTypeRef:
+    apiVersion: orbstack.lornu.ai/v1alpha1
+    kind: XLocalCloudBlueprint
+  mode: Pipeline
+  pipeline:
+    - step: patch-and-transform
+      functionRef:
+        name: function-patch-and-transform
+      input:
+        apiVersion: pt.fn.crossplane.io/v1beta1
+        kind: Resources
+        resources:
+          - name: namespace
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-ns
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: Namespace
+                    metadata:
+                      name: local-cloud
+                      labels:
+                        orbstack.lornu.ai/tier: "1"
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.name
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: metadata.name
+                transforms:
+                  - type: string
+                    string:
+                      type: Format
+                      fmt: "%s-ns"
+
+          - name: auth-service
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-auth
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    metadata:
+                      name: auth-service
+                      namespace: local-cloud
+                      labels:
+                        app: auth-service
+                    spec:
+                      replicas: 1
+                      selector:
+                        matchLabels:
+                          app: auth-service
+                      template:
+                        metadata:
+                          labels:
+                            app: auth-service
+                        spec:
+                          containers:
+                            - name: auth
+                              image: hashicorp/http-echo:1.0.0
+                              args: ["-text=ok", "-listen=:8080"]
+                              ports:
+                                - containerPort: 8080
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: auth-service-svc
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-auth-svc
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: Service
+                    metadata:
+                      name: auth-service
+                      namespace: local-cloud
+                    spec:
+                      selector:
+                        app: auth-service
+                      ports:
+                        - port: 8080
+                          targetPort: 8080
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: api-gateway
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-gateway
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    metadata:
+                      name: api-gateway
+                      namespace: local-cloud
+                    spec:
+                      replicas: 1
+                      selector:
+                        matchLabels:
+                          app: api-gateway
+                      template:
+                        metadata:
+                          labels:
+                            app: api-gateway
+                        spec:
+                          containers:
+                            - name: nginx
+                              image: nginx:1.27-alpine
+                              ports:
+                                - containerPort: 8080
+                              volumeMounts:
+                                - name: nginx-conf
+                                  mountPath: /etc/nginx/conf.d
+                          volumes:
+                            - name: nginx-conf
+                              configMap:
+                                name: api-gateway-nginx
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: api-gateway-cm
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-gateway-cm
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: ConfigMap
+                    metadata:
+                      name: api-gateway-nginx
+                      namespace: local-cloud
+                    data:
+                      default.conf: |
+                        server {
+                          listen 8080;
+                          location /healthz {
+                            return 200 "ok\n";
+                            add_header Content-Type text/plain;
+                          }
+                          location /api/v1/checkout {
+                            proxy_pass http://auth-service:8080/;
+                          }
+                        }
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: api-gateway-svc
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-gateway-svc
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: v1
+                    kind: Service
+                    metadata:
+                      name: api-gateway
+                      namespace: local-cloud
+                    spec:
+                      type: LoadBalancer
+                      selector:
+                        app: api-gateway
+                      ports:
+                        - port: 443
+                          targetPort: 8080
+                          name: https
+                        - port: 80
+                          targetPort: 8080
+                          name: http
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+
+          - name: ingress
+            base:
+              apiVersion: kubernetes.crossplane.io/v1alpha2
+              kind: Object
+              metadata:
+                name: local-cloud-ingress
+              spec:
+                deletionPolicy: Delete
+                forProvider:
+                  manifest:
+                    apiVersion: networking.k8s.io/v1
+                    kind: Ingress
+                    metadata:
+                      name: api-gateway
+                      namespace: local-cloud
+                    spec:
+                      rules:
+                        - host: app.k8s.orb.local
+                          http:
+                            paths:
+                              - path: /
+                                pathType: Prefix
+                                backend:
+                                  service:
+                                    name: api-gateway
+                                    port:
+                                      number: 80
+                providerConfigRef:
+                  name: orbstack-local
+            patches:
+              - fromFieldPath: spec.tier1.namespace
+                toFieldPath: spec.forProvider.manifest.metadata.namespace
+              - fromFieldPath: spec.tier1.ingressHost
+                toFieldPath: spec.forProvider.manifest.spec.rules[0].host

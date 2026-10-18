@@ -1,0 +1,9 @@
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: orbstack-local
+  labels:
+    lornu.ai/managed-by: crossplane
+spec:
+  credentials:
+    source: InjectedIdentity

@@ -1,0 +1,41 @@
+#cloud-config
+hostname: postgres
+fqdn: postgres.orb.local
+manage_etc_hosts: true
+
+users:
+  - name: postgres
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ${ORB_SSH_PUBKEY}
+
+package_update: true
+packages:
+  - postgresql-16
+  - prometheus-node-exporter
+
+write_files:
+  - path: /etc/postgresql/16/main/conf.d/cloud-tuning.conf
+    content: |
+      listen_addresses = '*'
+      max_connections = 100
+      shared_buffers = 256MB
+  - path: /var/lib/postgresql/bootstrap.sql
+    content: |
+      CREATE USER app WITH PASSWORD 'localcloud';
+      CREATE DATABASE microservices OWNER app;
+      GRANT ALL PRIVILEGES ON DATABASE microservices TO app;
+
+runcmd:
+  - sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/16/main/postgresql.conf
+  - sed -i "s/127.0.0.1\\/32/0.0.0.0\\/0/" /etc/postgresql/16/main/pg_hba.conf
+  - systemctl enable --now postgresql prometheus-node-exporter
+  - sudo -u postgres psql -f /var/lib/postgresql/bootstrap.sql
+  - |
+    if [ -n "${TS_AUTHKEY}" ]; then
+      curl -fsSL https://tailscale.com/install.sh | sh
+      tailscale up --authkey="${TS_AUTHKEY}" --ssh --hostname=orb-postgres
+    fi
+
+final_message: "postgres.orb.local tier3 cloud-init complete"

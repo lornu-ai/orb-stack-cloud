@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legacy-billing-amd64
+  labels:
+    app: legacy-billing-amd64
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: legacy-billing-amd64
+  template:
+    metadata:
+      labels:
+        app: legacy-billing-amd64
+    spec:
+      containers:
+        - name: billing
+          image: hashicorp/http-echo:1.0.0
+          args: ["-text=billing-ok", "-listen=:8080"]
+          env:
+            - name: DATABASE_URL
+              value: postgres://app:localcloud@postgres.orb.local:5432/microservices
+          ports:
+            - containerPort: 8080

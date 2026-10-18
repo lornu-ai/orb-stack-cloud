@@ -1,0 +1,25 @@
+apiVersion: orbstack.lornu.ai/v1alpha1
+kind: LocalCloudBlueprintClaim
+metadata:
+  name: reference-local-cloud
+  namespace: default
+spec:
+  compositionRef:
+    name: reference-local-cloud
+  environment: dev
+  tier3:
+    mode: cloudinit
+    postgresHost: postgres.orb.local
+    vaultHost: vault.orb.local
+  tier1:
+    ingressHost: app.k8s.orb.local
+    namespace: local-cloud
+  connectivity:
+    tailscale:
+      enabled: false
+      exposeService: api-gateway
+    cloudflare:
+      enabled: false
+      accessRequired: true
+      # zone: example.com
+      # publicHost: app.dev.example.com

@@ -1,0 +1,94 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xlocalcloudblueprints.orbstack.lornu.ai
+  labels:
+    lornu.ai/managed-by: crossplane
+spec:
+  group: orbstack.lornu.ai
+  names:
+    kind: XLocalCloudBlueprint
+    plural: xlocalcloudblueprints
+  claimNames:
+    kind: LocalCloudBlueprintClaim
+    plural: localcloudblueprintclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                environment:
+                  type: string
+                  enum: [dev, stage]
+                  default: dev
+                tier3:
+                  type: object
+                  properties:
+                    mode:
+                      type: string
+                      enum: [cloudinit, kubernetes]
+                      default: cloudinit
+                    postgresHost:
+                      type: string
+                      default: postgres.orb.local
+                    vaultHost:
+                      type: string
+                      default: vault.orb.local
+                  required: [mode]
+                tier1:
+                  type: object
+                  properties:
+                    ingressHost:
+                      type: string
+                      default: app.k8s.orb.local
+                    namespace:
+                      type: string
+                      default: local-cloud
+                  required: [ingressHost, namespace]
+                connectivity:
+                  type: object
+                  description: Tailscale mesh and Cloudflare edge (Crossplane P1–P2); replaces Terraform CF/TS modules.
+                  properties:
+                    tailscale:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: false
+                        exposeService:
+                          type: string
+                          description: Tier 1 Service name to publish on the tailnet via operator
+                          default: api-gateway
+                        hostname:
+                          type: string
+                          description: Desired MagicDNS or operator hostname suffix
+                    cloudflare:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                          default: false
+                        zone:
+                          type: string
+                          description: Cloudflare zone name (e.g. example.com)
+                        publicHost:
+                          type: string
+                          description: FQDN for Tunnel + Access (e.g. app.dev.example.com)
+                        accessRequired:
+                          type: boolean
+                          default: true
+              required: [tier3, tier1]
+            status:
+              type: object
+              properties:
+                tier1Ready:
+                  type: boolean
+                tier3BundleConfigMap:
+                  type: string
+          required: [spec]

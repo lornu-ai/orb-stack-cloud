@@ -1,0 +1,45 @@
+# RBAC for provider-kubernetes with InjectedIdentity.
+# The provider acts as its own ServiceAccount, so it needs explicit permission
+# to manage the resource types in composition-local-cloud.yaml.
+#
+# The ServiceAccount name includes the package revision hash and is NOT
+# predictable. After installing the provider, find it and patch the
+# ClusterRoleBinding below:
+#
+#   kubectl -n crossplane-system get sa | grep provider-kubernetes
+#
+# Then replace PROVIDER_KUBERNETES_SA with the actual SA name and re-apply:
+#   kubectl apply -k crossplane/providerconfig
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: provider-kubernetes-orbstack
+  labels:
+    lornu.ai/managed-by: crossplane
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "services", "configmaps"]
+    verbs: ["*"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["*"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-kubernetes-orbstack
+  labels:
+    lornu.ai/managed-by: crossplane
+subjects:
+  - kind: ServiceAccount
+    # REPLACE with the actual provider-kubernetes ServiceAccount name
+    # (see comment at the top of this file).
+    name: PROVIDER_KUBERNETES_SA
+    namespace: crossplane-system
+roleRef:
+  kind: ClusterRole
+  name: provider-kubernetes-orbstack
+  apiGroup: rbac.authorization.k8s.io
