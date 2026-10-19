@@ -79,7 +79,7 @@ spec:
                           description: Cloudflare zone name (e.g. stevedores.org)
                         publicHost:
                           type: string
-                          description: FQDN for Tunnel + Access, one label below the zone (e.g. osc.stevedores.org)
+                          description: FQDN for Tunnel + Access, one label below the zone (e.g. osc-app.stevedores.org)
                         accessRequired:
                           type: boolean
                           default: true

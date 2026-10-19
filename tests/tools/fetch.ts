@@ -34,19 +34,20 @@ export async function cachedFile(path: string, url: string, expectedSha: string)
   return data;
 }
 
-/** Install a pinned binary into `.cache/bin` and return its path. */
-export async function ensureTool(artifact: PinnedArtifact): Promise<string> {
+/** Install a pinned binary into `<cacheDir>/bin` and return its path. */
+export async function ensureTool(artifact: PinnedArtifact, cacheDir = CACHE_DIR): Promise<string> {
   const pin = artifact.platforms[currentPlatform()];
   if (!pin) throw new Error(`${artifact.name}: no pin for ${currentPlatform()}`);
-  const target = join(BIN_DIR, `${artifact.name}-${artifact.version}`);
+  const binDir = join(cacheDir, "bin");
+  const target = join(binDir, `${artifact.name}-${artifact.version}`);
   const marker = `${target}.sha256`;
   if (existsSync(target) && existsSync(marker) && readFileSync(marker, "utf8") === pin.sha256) return target;
 
-  const downloaded = join(CACHE_DIR, "downloads", `${artifact.name}-${artifact.version}${pin.archiveMember ? ".tar.gz" : ""}`);
+  const downloaded = join(cacheDir, "downloads", `${artifact.name}-${artifact.version}${pin.archiveMember ? ".tar.gz" : ""}`);
   await cachedFile(downloaded, pin.url, pin.sha256);
-  mkdirSync(BIN_DIR, { recursive: true });
+  mkdirSync(binDir, { recursive: true });
   if (pin.archiveMember) {
-    const extractDir = join(CACHE_DIR, "extract", `${artifact.name}-${artifact.version}`);
+    const extractDir = join(cacheDir, "extract", `${artifact.name}-${artifact.version}`);
     mkdirSync(extractDir, { recursive: true });
     await run(["tar", "-xzf", downloaded, "-C", extractDir, pin.archiveMember]);
     writeFileSync(target, readFileSync(join(extractDir, pin.archiveMember)));

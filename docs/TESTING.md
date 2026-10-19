@@ -33,7 +33,8 @@ The Rosetta gate is skipped unless `ORB_NFR_ALLOW_ENGINE_RESTART=1`, because tog
 
 | Host | Use |
 |---|---|
-| `osc.stevedores.org` | stable public host |
+| `osc.stevedores.org` | public hub website (not probed by path C) |
+| `osc-app.stevedores.org` | stable tunnel + Access host for path C |
 | `osc-pr-<run_id>.stevedores.org` | per-run tunnel for path C |
 
 Issue #6 and #7 use `pr-<run_id>.ci.example.com`. Names are kept one label below `stevedores.org` because Universal SSL covers only `*.stevedores.org`; Tier 1 rejects deeper names. See `docs/EDGE-NETWORK.md`.

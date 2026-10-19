@@ -12,4 +12,4 @@
 - **Workload:** `apps/orb-stack-cloud/base/` (HTTPRoute host `osc.stevedores.org`)
 - **Reconciler:** `reconcilers/aivcs-platform/oxidizedflux-orb-stack-cloud.yaml`
 
-Edge HTML is a lightweight hub until CI publishes docs from this repository; Cloudflare Tunnel claims in `examples/claim-cloudflare-edge.yaml` may use other hostnames under your zone.
+Edge HTML is a lightweight hub until CI publishes docs from this repository. Cloudflare Tunnels into the Mac use `osc-app.stevedores.org` (stable) and `osc-pr-<run_id>.stevedores.org` (per CI run), never this hostname — see [EDGE-NETWORK.md](EDGE-NETWORK.md#hostnames).

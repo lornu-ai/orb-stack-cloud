@@ -1,5 +1,5 @@
 import { runGates, skip, type Gate } from "../lib/gates";
-import { PUBLIC_HOST, prTunnelHost } from "../lib/hosts";
+import { prTunnelHost, TUNNEL_HOST } from "../lib/hosts";
 import { run, which } from "../lib/proc";
 import { finish } from "../lib/report";
 import { edgeProbes, evaluateHttp, observe } from "./probes";
@@ -7,10 +7,10 @@ import { edgeProbes, evaluateHttp, observe } from "./probes";
 /**
  * Runs on a Linux runner outside the Mac: Path B over the tailnet, Path C through the
  * Cloudflare edge. ORB_RUN_ID selects the per-run names; ORB_PUBLIC_HOST overrides the
- * edge host (defaults to the per-run tunnel, or osc.stevedores.org with no run id).
+ * edge host (defaults to the per-run tunnel, or osc-app.stevedores.org with no run id).
  */
 const runId = process.env.ORB_RUN_ID ?? process.env.GITHUB_RUN_ID;
-const edgeHost = process.env.ORB_PUBLIC_HOST ?? (runId ? prTunnelHost(runId) : PUBLIC_HOST);
+const edgeHost = process.env.ORB_PUBLIC_HOST ?? (runId ? prTunnelHost(runId) : TUNNEL_HOST);
 const tailnet = process.env.TS_TAILNET;
 const token =
   process.env.CF_ACCESS_CLIENT_ID && process.env.CF_ACCESS_CLIENT_SECRET

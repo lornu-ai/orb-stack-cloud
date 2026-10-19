@@ -46,6 +46,6 @@ kubectl get localcloudblueprintclaims
 |------|-----|
 | Local | `https://app.k8s.orb.local/api/v1/checkout` |
 | Tailnet | `https://<gateway>.<tailnet>.ts.net/api/v1/checkout` |
-| Cloudflare | `https://osc.stevedores.org/api/v1/checkout` |
+| Cloudflare | `https://osc-app.stevedores.org/api/v1/checkout` |
 
 All should return **HTTP 200** with Tier 2 + Tier 3 up and vault reachable.

@@ -22,4 +22,4 @@ spec:
       enabled: false
       accessRequired: true
       # zone: stevedores.org
-      # publicHost: osc.stevedores.org
+      # publicHost: osc-app.stevedores.org

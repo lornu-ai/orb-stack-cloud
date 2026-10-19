@@ -18,7 +18,7 @@ All must succeed for Epic 7 DoD:
 
 1. **Local:** `https://app.k8s.orb.local/api/v1/checkout`
 2. **Tailnet:** `https://<api-gateway>.<tailnet>.ts.net/...` (operator expose)
-3. **Public:** `https://osc.stevedores.org/...` (Cloudflare Tunnel + Access; CI uses `osc-pr-<run_id>.stevedores.org`)
+3. **Public:** `https://osc-app.stevedores.org/...` (Cloudflare Tunnel + Access; CI uses `osc-pr-<run_id>.stevedores.org`)
 
 Flow under test: Ingress/`cloudflared` → api-gateway → auth → vault.orb.local → billing.internal.orb.local (amd64) → LocalStack SQS → postgres.orb.local.
 

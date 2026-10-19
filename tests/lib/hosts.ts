@@ -1,5 +1,8 @@
 export const PUBLIC_ZONE = "stevedores.org";
-export const PUBLIC_HOST = `osc.${PUBLIC_ZONE}`;
+/** Public hub website, served from infra-code-micro (docs/PUBLIC-SITE.md). Not a tunnel. */
+export const HUB_HOST = `osc.${PUBLIC_ZONE}`;
+/** Stable Cloudflare Tunnel + Access host into the Mac's api-gateway. */
+export const TUNNEL_HOST = `osc-app.${PUBLIC_ZONE}`;
 
 const LABEL = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/;
 

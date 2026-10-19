@@ -32,20 +32,23 @@ const artifact = (name: string, archive: boolean): PinnedArtifact => ({
 });
 
 describe("ensureTool", () => {
+  const cache = mkdtempSync(join(tmpdir(), "orb-tools-cache-"));
+
   test("installs a plain binary as executable and reuses it", async () => {
     const a = artifact("osc-plain", false);
-    const path = await ensureTool(a);
+    const path = await ensureTool(a, cache);
+    expect(path.startsWith(cache)).toBe(true);
     expect(readFileSync(path)).toEqual(Buffer.from(binary));
     expect(statSync(path).mode & 0o111).not.toBe(0);
-    expect(await ensureTool(a)).toBe(path);
+    expect(await ensureTool(a, cache)).toBe(path);
   });
 
   test("extracts the pinned member from a tarball", async () => {
-    const path = await ensureTool(artifact("osc-archive", true));
+    const path = await ensureTool(artifact("osc-archive", true), cache);
     expect(readFileSync(path, "utf8")).toContain("fake-tool");
   });
 
   test("an artifact without a pin for this platform is rejected", async () => {
-    await expect(ensureTool({ name: "osc-none", version: "v0", platforms: {} })).rejects.toThrow("no pin");
+    await expect(ensureTool({ name: "osc-none", version: "v0", platforms: {} }, cache)).rejects.toThrow("no pin");
   });
 });

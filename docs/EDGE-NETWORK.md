@@ -30,7 +30,7 @@ Public ingress and remote collaboration **must not** rely on Terraform or manual
 
 | Scenario | Pattern |
 |----------|---------|
-| Share `https://osc.stevedores.org` externally | **Remote-managed Tunnel** + DNS CNAME; `cloudflared` on Mac or Deployment in `local-cloud` namespace |
+| Share `https://osc-app.stevedores.org` externally | **Remote-managed Tunnel** + DNS CNAME; `cloudflared` on Mac or Deployment in `local-cloud` namespace |
 | Protect `/api/v1/checkout` | **Access** application + reusable policies (Crossplane), IdP per org standard |
 | LocalStack / billing demo URLs | Prefer OrbStack `dev.orbstack.domains` on Mac; optional CF **public hostname** only when demo leaves the machine |
 
@@ -38,7 +38,8 @@ Public ingress and remote collaboration **must not** rely on Terraform or manual
 
 | Host | Use |
 |------|-----|
-| `osc.stevedores.org` | Stable public host for the reference local cloud |
+| `osc.stevedores.org` | Public hub website, served from `infra-code-micro` ([PUBLIC-SITE.md](PUBLIC-SITE.md)) — not a tunnel |
+| `osc-app.stevedores.org` | Stable Cloudflare Tunnel + Access host into the Mac's api-gateway |
 | `osc-pr-<run_id>.stevedores.org` | Ephemeral tunnel per CI run, deleted by the run's cleanup step |
 
 Public hosts stay **one label below `stevedores.org`**. The zone's Universal SSL certificate covers `stevedores.org` and `*.stevedores.org` only, so a deeper name such as `pr-42.ci.osc.stevedores.org` would fail TLS at the edge unless Advanced Certificate Manager is bought. Tier 1 validation rejects claims that break this rule.

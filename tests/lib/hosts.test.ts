@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { edgeHostProblem, PUBLIC_HOST, prTunnelHost } from "./hosts";
+import { edgeHostProblem, HUB_HOST, prTunnelHost, TUNNEL_HOST } from "./hosts";
 
 describe("edgeHostProblem", () => {
   test("accepts the apex and one label below it", () => {
     expect(edgeHostProblem("stevedores.org", "stevedores.org")).toBeUndefined();
-    expect(edgeHostProblem("stevedores.org", PUBLIC_HOST)).toBeUndefined();
+    expect(edgeHostProblem("stevedores.org", HUB_HOST)).toBeUndefined();
+    expect(edgeHostProblem("stevedores.org", TUNNEL_HOST)).toBeUndefined();
   });
 
   test("rejects names Universal SSL does not cover", () => {
