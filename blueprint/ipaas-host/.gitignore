@@ -1,0 +1,5 @@
+/target
+**/target
+bun-sdk/node_modules
+bun-sdk/bun.lockb
+/tmp/oxidized_bun_*.sock

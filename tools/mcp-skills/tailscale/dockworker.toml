@@ -1,0 +1,30 @@
+# dockworker.toml — OCI image for osc-skill-tailscale (local Podman fallback).
+#
+# Built with dockworker.ai (Nix-backed) per OCI Image Spec.
+# Security: Do NOT bake TS_AUTHKEY or OAuth client secrets into this image.
+# Prefer running as the Mac / ChromeOS host user on 127.0.0.1:9321/mcp.
+
+id = "osc-skill-tailscale"
+engine = "nix"
+
+[defaults]
+registry = "us-docker.pkg.dev/PROJECT_ID/stevedores"
+
+[provenance]
+slsa = true
+sbom = true
+
+[[targets]]
+name = "osc-skill-tailscale"
+context = "."
+image = "osc-skill-tailscale"
+runtime = "rust"
+
+[oci.image]
+authors = ["stevedores-org <community@stevedores.org>"]
+url = "https://github.com/stevedores-org/orb-stack-cloud"
+source = "https://github.com/stevedores-org/orb-stack-cloud"
+vendor = "stevedores-org"
+licenses = "Apache-2.0"
+title = "osc-skill-tailscale"
+description = "Tailnet status, Serve status, and ACL lint MCP skill for OSC (no secret exfil)"
