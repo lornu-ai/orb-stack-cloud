@@ -1,0 +1,30 @@
+# dockworker.toml — OCI image for osc-skill-orbstack (local Podman fallback).
+#
+# Built with dockworker.ai (Nix-backed) per OCI Image Spec.
+# Security: Do NOT bake TS_AUTHKEY, OAuth client secrets, or kubeconfig tokens
+# into this image. Prefer running as the Mac host user on 127.0.0.1:9320/mcp.
+
+id = "osc-skill-orbstack"
+engine = "nix"
+
+[defaults]
+registry = "us-docker.pkg.dev/PROJECT_ID/stevedores"
+
+[provenance]
+slsa = true
+sbom = true
+
+[[targets]]
+name = "osc-skill-orbstack"
+context = "."
+image = "osc-skill-orbstack"
+runtime = "rust"
+
+[oci.image]
+authors = ["stevedores-org <community@stevedores.org>"]
+url = "https://github.com/stevedores-org/orb-stack-cloud"
+source = "https://github.com/stevedores-org/orb-stack-cloud"
+vendor = "stevedores-org"
+licenses = "Apache-2.0"
+title = "osc-skill-orbstack"
+description = "OrbStack / kubectl MCP skill for OSC Gap overlays (read + allowlisted apply)"

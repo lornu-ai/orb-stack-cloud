@@ -67,4 +67,4 @@ Internet → Cloudflare Access → Tunnel → cloudflared (tailnet or localhost)
 
 ## Validation additions
 
-See [VALIDATION.md](VALIDATION.md#tailscale-and-cloudflare-optional-p1p2).
+See [VALIDATION.md](VALIDATION.md#tailscale-and-cloudflare-optional-p1p2) and [OSC-MCP-SKILLS.md](OSC-MCP-SKILLS.md) for the `tailscale::*` and `orbstack::*` oxidizedMCP skills (`status`, `whoami`, `serve_status`, `acl_lint`, `authkey_present`).

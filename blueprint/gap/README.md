@@ -39,3 +39,8 @@ Pin a **digest** from gap CI (LOR-550) before treating the hub as durable.
 ## Public edge
 
 Do **not** expose `/ws` or `/sync` on Cloudflare until Gap LOR-545 (WS auth) is done. Local `*.k8s.orb.local` and Tailscale only. Voice sessions also need LOR-571.
+
+## oxidizedMCP skills (`gap::*`, `orbstack::*`, `tailscale::*`)
+
+Registry fragment: [`mcp/oxidized-skill.example.yaml`](mcp/oxidized-skill.example.yaml) (includes the Cloudflare Workers org MCP edge at `https://gap.airesearches.app/mcp` from LOR-578 plus local `orbstack` and `tailscale` skills).  
+Skill implementations: [`tools/mcp-skills/`](../../tools/mcp-skills/README.md) ([docs/OSC-MCP-SKILLS.md](../../docs/OSC-MCP-SKILLS.md)).

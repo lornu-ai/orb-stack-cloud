@@ -1,8 +1,18 @@
-# Example oxidizedMCP registry fragment — attach Chrome DevTools MCP as a skill.
+# Example oxidizedMCP registry fragment — ChromeOS / browser-agent + OSC + Gap profile.
 # Copy into a private registry manifest; do not point at production secrets.
+#
+# ChromeOS Crostini agents typically enable `gap`, `chrome-devtools`, and `tailscale`
+# while leaving `orbstack` disabled (no macOS `orb` CLI on Crostini). On Mac
+# OrbStack hosts (`mac-a`), enable all four or use `blueprint/gap/mcp/oxidized-skill.example.yaml`.
 version: 1
 environment: local
 skills:
+  - name: gap
+    description: >
+      Gap org MCP server on Cloudflare Workers (LOR-578: agent workforce directory,
+      task delegation, evidence, and hash-chained audit verification behind Cloudflare Access).
+    endpoint: https://gap.airesearches.app/mcp
+    enabled: true
   - name: chrome-devtools
     description: >
       Chrome DevTools for Agents (CDP via chrome-devtools-mcp). Inspect Gap web
@@ -14,3 +24,11 @@ skills:
     enabled: true
     # Optional offline fallback when you OCI-package the server:
     # image: ghcr.io/example/chrome-devtools-mcp:latest
+  - name: orbstack
+    description: OrbStack / kubectl helpers for OSC Gap overlays (read + allowlisted apply)
+    endpoint: http://127.0.0.1:9320/mcp
+    enabled: true
+  - name: tailscale
+    description: Tailnet status, Serve status, ACL lint; no secret exfil
+    endpoint: http://127.0.0.1:9321/mcp
+    enabled: true

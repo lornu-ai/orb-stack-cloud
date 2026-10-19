@@ -57,6 +57,7 @@ GAP Web + WebMCP tools        ─┼── Cloudflare Access ── gap.airesear
 | P0 | CI/CD | `lornu-ai/gap` image CI + this repo kustomize-validate |
 | P1 | **iOS interactive voice play** | LOR-548 epic: LOR-568 shell, LOR-569 session, LOR-570 barge-in — needs deployed authenticated gateway |
 | P1 | **WebMCP + ChromeOS agents** | Gap web tools + chrome-devtools-mcp dual loop (`blueprint/webmcp-chromeos/`) |
+| P1 | **OSC MCP skills (`orbstack` + `tailscale`)** | `tools/mcp-skills/` + `blueprint/gap/mcp/` — read-heavy verification & allowlisted `mac-a` overlay apply ([OSC-MCP-SKILLS.md](OSC-MCP-SKILLS.md)) |
 | P1 | **iPaaS Host (oxidizedgraph + axum + Bun UDS)** | LOR-597 — wraps WebMCP; Execution/Control/Bun planes (`blueprint/ipaas-host/`) |
 | P1 | Agent delegation | Gap agent workforce epic (incl. voice-to-delegate LOR-561) |
 | P1 | Monitoring | Health checks / alerts |

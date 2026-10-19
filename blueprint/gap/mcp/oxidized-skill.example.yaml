@@ -1,0 +1,31 @@
+# Example oxidizedMCP registry fragment — Gap org MCP + OSC OrbStack + Tailscale skills.
+# Copy into a private registry manifest (`~/.config/oxidized-mcp/registry.yaml`);
+# do not commit production secrets or bake TS_AUTHKEY / CF Access tokens into images.
+#
+# Local OSC skill implementations live in this repo under `tools/mcp-skills/orbstack`
+# and `tools/mcp-skills/tailscale`. The org MCP edge (`https://gap.airesearches.app/mcp`,
+# LOR-578) is served by the `gap-web` Cloudflare Worker behind Cloudflare Access.
+# Architecture: `docs/OSC-MCP-SKILLS.md`.
+version: 1
+environment: local
+skills:
+  - name: gap
+    description: >
+      Gap org MCP server on Cloudflare Workers (LOR-578: whoami, register_agent,
+      heartbeat, list_agents, delegate_task, respond_to_task, update_task_status,
+      attach_evidence, list_tasks, get_task, verify_audit). Guarded by Cloudflare
+      Access (managed OAuth for interactive IDE clients or CF Access service tokens).
+    endpoint: https://gap.airesearches.app/mcp
+    enabled: true
+  - name: orbstack
+    description: OrbStack / kubectl helpers for OSC Gap overlays (read + allowlisted apply)
+    endpoint: http://127.0.0.1:9320/mcp
+    enabled: true
+    # Optional local Podman stdio fallback (never bake kubeconfig/tokens):
+    # image: ghcr.io/stevedores-org/osc-skill-orbstack:latest
+  - name: tailscale
+    description: Tailnet status, Serve status, ACL lint; no secret exfil
+    endpoint: http://127.0.0.1:9321/mcp
+    enabled: true
+    # Optional local Podman stdio fallback (never bake TS_AUTHKEY):
+    # image: ghcr.io/stevedores-org/osc-skill-tailscale:latest

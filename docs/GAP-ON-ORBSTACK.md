@@ -72,3 +72,4 @@ kubectl apply -k blueprint/gap/overlays/mac-a
 - Non-root UID `65532` (matches gap-hub image).
 - No Linear/Slack tokens in these manifests — clients keep secrets on device (LOR-546 Keychain).
 - Public Tunnel for Gap sync / voice waits on LOR-545 (+ LOR-571 for voice sessions).
+- Agent verification (`orbstack::*` + `tailscale::*` skills in the oxidizedMCP mesh): see [OSC-MCP-SKILLS.md](OSC-MCP-SKILLS.md) and [`blueprint/gap/mcp/oxidized-skill.example.yaml`](../blueprint/gap/mcp/oxidized-skill.example.yaml).
