@@ -1,0 +1,19 @@
+# Tailnet-only exposure via the Tailscale Kubernetes operator.
+# The first label of tls.hosts becomes the tailnet machine name, served as
+# https://<name>.<tailnet>.ts.net with a Let's Encrypt cert managed by Tailscale.
+# Never add the tailscale.com/funnel annotation: Funnel publishes to the internet.
+# No Cloudflare / public ingress: see ../README.md "Why tailnet only".
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaultwarden
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: vaultwarden
+      port:
+        name: http
+  tls:
+    - hosts:
+        - vaultwarden
