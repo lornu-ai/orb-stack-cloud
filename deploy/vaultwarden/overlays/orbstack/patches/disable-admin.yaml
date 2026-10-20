@@ -1,0 +1,7 @@
+# Removes ADMIN_TOKEN from the container env, which disables /admin entirely.
+# Index 0 is ADMIN_TOKEN in base/deployment.yaml; keep in sync if env changes.
+- op: test
+  path: /spec/template/spec/containers/0/env/0/name
+  value: ADMIN_TOKEN
+- op: remove
+  path: /spec/template/spec/containers/0/env/0

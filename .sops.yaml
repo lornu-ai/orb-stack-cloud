@@ -1,0 +1,6 @@
+# Replace the placeholder with the public key of the age identity stored in the
+# flux-system/sops-age Secret (see deploy/vaultwarden/README.md).
+creation_rules:
+  - path_regex: deploy/.*\.sops\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    age: age1REPLACE_WITH_FLUX_SOPS_RECIPIENT

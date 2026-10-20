@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vaultwarden
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: latest
+  annotations:
+    # Deleting the namespace would delete the PVCs (and the vault) with it.
+    kustomize.toolkit.fluxcd.io/prune: disabled

@@ -1,0 +1,4 @@
+# Tailnet machine name -> https://vaultwarden.tailbab6b0.ts.net (must match DOMAIN).
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: vaultwarden

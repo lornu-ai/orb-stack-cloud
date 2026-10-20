@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+  # Uncomment once secret.sops.yaml has been created and sops-encrypted
+  # (see ../../README.md). Until then the pod waits on the missing Secret.
+  # - secret.sops.yaml
+configMapGenerator:
+  - name: vaultwarden-config
+    behavior: merge
+    literals:
+      - DOMAIN=https://vaultwarden.tailbab6b0.ts.net
+      # SMTP (optional; SMTP_PASSWORD goes in the SOPS secret):
+      # - SMTP_HOST=smtp.example.com
+      # - SMTP_PORT=587
+      # - SMTP_SECURITY=starttls
+      # - SMTP_FROM=vaultwarden@example.com
+      # - SMTP_FROM_NAME=Vaultwarden
+      # - SMTP_USERNAME=vaultwarden@example.com
+  - name: vaultwarden-backup
+    behavior: merge
+    literals:
+      # Public key of the offline backup age identity (not the Flux SOPS key).
+      - AGE_RECIPIENT=age1REPLACE_WITH_BACKUP_RECIPIENT
+patches:
+  - path: patches/ingress-hostname.yaml
+    target:
+      kind: Ingress
+      name: vaultwarden
+  - path: patches/storage-class.yaml
+    target:
+      kind: PersistentVolumeClaim
+  # Uncomment to disable /admin after initial setup (see README).
+  # - path: patches/disable-admin.yaml
+  #   target:
+  #     kind: Deployment
+  #     name: vaultwarden
