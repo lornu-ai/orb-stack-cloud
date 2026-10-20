@@ -1,0 +1,4 @@
+# OrbStack's built-in Kubernetes ships the local-path provisioner.
+- op: add
+  path: /spec/storageClassName
+  value: local-path
